@@ -1,0 +1,12 @@
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\bin\Debug\net6.0\RhondaLibraryPOC.Domain.deps.json
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\bin\Debug\net6.0\RhondaLibraryPOC.Domain.dll
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\bin\Debug\net6.0\RhondaLibraryPOC.Domain.pdb
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.csproj.AssemblyReference.cache
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.AssemblyInfoInputs.cache
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.AssemblyInfo.cs
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.csproj.CoreCompileInputs.cache
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.dll
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\refint\RhondaLibraryPOC.Domain.dll
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\RhondaLibraryPOC.Domain.pdb
+C:\Users\nanab\OneDrive\Projects\UpworkPOC\RhondaLibraryPOC\RhondaLibraryPOC.Domain\obj\Debug\net6.0\ref\RhondaLibraryPOC.Domain.dll

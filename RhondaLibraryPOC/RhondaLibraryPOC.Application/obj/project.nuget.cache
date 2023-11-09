@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "1Lwv7c06zsE0my0Qo5jAw6iw3xHsbDPZKFoq7Rc0TfONDYQmNVkGSj1mvAIO75L292MzaHKysVtVu0jFwKx8wA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\nanab\\OneDrive\\Projects\\UpworkPOC\\RhondaLibraryPOC\\RhondaLibraryPOC.Application\\RhondaLibraryPOC.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nanab\\.nuget\\packages\\fluentvalidation\\11.8.0\\fluentvalidation.11.8.0.nupkg.sha512",
+    "C:\\Users\\nanab\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\nanab\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
+    "C:\\Users\\nanab\\.nuget\\packages\\mediatr\\12.1.1\\mediatr.12.1.1.nupkg.sha512",
+    "C:\\Users\\nanab\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\nanab\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

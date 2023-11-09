@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\RhondaLibraryPOC.Presentation.props" />
+</Project>
