@@ -15,4 +15,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RhondaLibraryPOC.Application\RhondaLibraryPOC.Application.csproj" />
+    <ProjectReference Include="..\RhondaLibraryPOC.Infrastructure\RhondaLibraryPOC.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

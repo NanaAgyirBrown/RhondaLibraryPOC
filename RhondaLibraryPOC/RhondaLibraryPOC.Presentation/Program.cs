@@ -1,6 +1,15 @@
+using RhondaLibraryPOC.Application;
+using RhondaLibraryPOC.Infrastructure;
+using RhondaLibraryPOC.Presentation;
+
+Console.Title = "Rhonda Library POC Microservice";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services
+    .AddPresentation()
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
