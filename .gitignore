@@ -4,3 +4,325 @@
 
 /.vs
 /RhondaLibraryPOC/RhondaLibraryPOC.Presentation/RhondaLibraryPOC.Presentation.csproj.user
+# .gitignore for C# Projects
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/RhondaLibraryPOC.Presentation.csproj.nuget.g.targets
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.assets.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.csproj.AssemblyReference.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.csproj.BuildWithSkipAnalyzers
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.csproj.CoreCompileInputs.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.csproj.FileListAbsolute.txt
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.MvcApplicationPartsAssemblyInfo.cs
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/RhondaLibraryPOC.Presentation.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/refint/RhondaLibraryPOC.Presentation.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Debug/net6.0/ref/RhondaLibraryPOC.Presentation.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/Dapper.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/FluentValidation.AspNetCore.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/FluentValidation.DependencyInjectionExtensions.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/FluentValidation.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/Microsoft.Extensions.Logging.Abstractions.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/Npgsql.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Application.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Domain.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Infrastructure.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Infrastructure.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Presentation.deps.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Presentation.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/bin/Debug/net6.0/RhondaLibraryPOC.Presentation.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/ref/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/refint/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/refint/RhondaLibraryPOC.Infrastructure.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.assets.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.csproj.AssemblyReference.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.csproj.BuildWithSkipAnalyzers
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.csproj.CopyComplete
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.csproj.CoreCompileInputs.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.csproj.FileListAbsolute.txt
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/RhondaLibraryPOC.Infrastructure.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/project.assets.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/project.nuget.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/RhondaLibraryPOC.Infrastructure.csproj.nuget.dgspec.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/RhondaLibraryPOC.Infrastructure.csproj.nuget.g.targets
+/RhondaLibraryPOC/.vs/ProjectEvaluation/rhondalibrarypoc.metadata.v7.bin
+/RhondaLibraryPOC/.vs/ProjectEvaluation/rhondalibrarypoc.projects.v7.bin
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/DesignTimeBuild/.dtbcache.v2
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/FileContentIndex/2f7afc7b-3d89-4d69-9e93-db3c4ce8d864.vsidx
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/FileContentIndex/7088d062-fbf6-475b-a403-239e29107ab4.vsidx
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/FileContentIndex/9c1bd20d-343c-4ca0-89ec-28106c3edc89.vsidx
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/FileContentIndex/bae0bc3c-7bfe-4e8d-86af-e3f391656d93.vsidx
+/RhondaLibraryPOC/.vs/RhondaLibraryPOC/FileContentIndex/e1490a6b-7895-4afb-aae7-c53e445b8047.vsidx
+*.v2
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.assets.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.csproj.AssemblyReference.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.csproj.BuildWithSkipAnalyzers
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.csproj.CopyComplete
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.csproj.CoreCompileInputs.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.csproj.FileListAbsolute.txt
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/Debug/net6.0/RhondaLibraryPOC.Application.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/project.assets.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/project.nuget.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/obj/RhondaLibraryPOC.Application.csproj.nuget.dgspec.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/ref/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/refint/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.assets.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.csproj.AssemblyReference.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.csproj.BuildWithSkipAnalyzers
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.csproj.CoreCompileInputs.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/Debug/net6.0/RhondaLibraryPOC.Domain.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/project.assets.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/project.nuget.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/obj/RhondaLibraryPOC.Domain.csproj.nuget.dgspec.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/obj/Debug/net6.0/ref/RhondaLibraryPOC.Infrastructure.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Application.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Domain.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Infrastructure.deps.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Infrastructure.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Infrastructure/bin/Debug/net6.0/RhondaLibraryPOC.Infrastructure.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/bin/Debug/net6.0/RhondaLibraryPOC.Domain.deps.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/bin/Debug/net6.0/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Domain/bin/Debug/net6.0/RhondaLibraryPOC.Domain.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/bin/Debug/net6.0/RhondaLibraryPOC.Application.deps.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/bin/Debug/net6.0/RhondaLibraryPOC.Application.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/bin/Debug/net6.0/RhondaLibraryPOC.Application.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/bin/Debug/net6.0/RhondaLibraryPOC.Domain.dll
+/RhondaLibraryPOC/RhondaLibraryPOC.Application/bin/Debug/net6.0/RhondaLibraryPOC.Domain.pdb
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/project.assets.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/project.nuget.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/RhondaLibraryPOC.Presentation.csproj.nuget.dgspec.json
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/AbsoluteOutputAssemblyPath.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/AdditionalProbingPaths.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ContainerDevelopmentMode.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ContainerId.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ContainerName.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ContainerOperatingSystemFlavor.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ContainerRunContext.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/DebuggeeArguments.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/DebuggeeKillProcessCommand.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/DebuggeeProgram.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/DebuggeeWorkingDirectory.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/FastModeProjectMountDirectory.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ImageBuildContext.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/ImageId.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/OperatingSystemName.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/TargetFramework.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/VolumeMappings.cache
+/RhondaLibraryPOC/RhondaLibraryPOC.Presentation/obj/Container/VsDbgScript.cache
