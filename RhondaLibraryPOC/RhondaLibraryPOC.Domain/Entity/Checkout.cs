@@ -4,7 +4,7 @@ namespace RhondaLibraryPOC.Domain.Entity;
 
 public class Checkout : BaseAuditableEntity
 {
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public User User { get; set; } = null!;
     public string BookId { get; set; }
     public Book Book { get; set; } = null!;

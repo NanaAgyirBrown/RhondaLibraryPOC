@@ -13,10 +13,8 @@ using RhondaLibraryPOC.Application.CQRS.Users.Queries;
 using RhondaLibraryPOC.Application.Interfaces;
 using RhondaLibraryPOC.Application.Interfaces.Persistence;
 using RhondaLibraryPOC.Application.Users;
-using RhondaLibraryPOC.Domain.Common.Errors;
 using RhondaLibraryPOC.Domain.Entity;
 using RhondaLibraryPOC.Infrastructure.Common;
-using System.Data;
 using System.Text.Json;
 
 namespace RhondaLibraryPOC.Persistence.Repositories;
@@ -32,53 +30,51 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         _dataSource = dataSource;
     }
 
-    public async Task<ErrorOr<Book?>> AddBook(Book book)
+    public async Task<ErrorOr<BookDTO>> AddBook(Book book, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Adding book {@book} at {DateTime}", book, DateTime.Now);
-
-        book.CreatedAt = DateTime.Now;
-        book.ModifiedAt = DateTime.Now;
-
-        DbResponse? dbResponse = null;
-
         try
         {
-            _logger.LogInformation("Creating connection at {DateTime}", DateTime.Now);
+            _logger.LogInformation("Adding book {book} at {DateTime}", book, DateTime.Now);
 
-            using(var connection = await _dataSource.CreateConnection())
+            book.CreatedOn = DateTime.Now;
+            book.LastUpdatedOn = DateTime.Now;
+
+            using (var connection = await _dataSource.CreateConnection())
             {
-                var paramlist = PrepBookParams(book);
-                _logger.LogInformation("Checking if Book Exist with ISBN ");
-                dbResponse = await connection.QueryFirstAsync<DbResponse?>("Select * from Shelve.IfBookExists(@vISBN)", paramlist);
+                _logger.LogInformation("Preparing book parameters for {Book} at {DateTime}", book, DateTime.Now);
+                var paramlist = ParamPrep.PrepBookParams(book);
 
-                var status = CheckBookExists(dbResponse.StatusCode);
+                _logger.LogInformation("Checking if Book Exist with ISBN ");
+                var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Shelve.IfBookExists(@vISBN)", paramlist);
+
+                var status = ErrorStatus.CheckBookExists(dbResponse.StatusCode);
 
                 if (status.FirstError.Code == "Book.BookNotFound")
                 {
-                    _logger.LogInformation("Book does not exist, adding book to database. Creating new record.");
+                    _logger.LogInformation("Book does not exist, adding book to the database. Creating a new record.");
                     dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Shelve.add_book(@vIsbn, @vTitle, @vAuthor, @vPublisher, @vGenre, @vIsAvailable)", paramlist);
 
-                    if (dbResponse.StatusCode == 200)
+                    if (dbResponse.StatusCode == (int)EnumStatus.Success)
                     {
                         _logger.LogInformation("Book added successfully. Returning book details.");
-                        var bookDTO = JsonSerializer.Deserialize<Book?>(dbResponse.Details, options: null);
-
-                        return bookDTO;
+                        return JsonSerializer.Deserialize<BookDTO>(dbResponse.Details, options: null);
                     }
                     else
+                    {
                         return Error.Failure(
                                 code: dbResponse.Status,
                                 description: dbResponse.Details);
-
+                    }
                 }
                 else
+                {
                     return status;
+                }
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            _logger.LogInformation("LibraryRepository - book saving exception occurred : {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
-
+            _logger.LogInformation("LibraryRepository - book saving exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
             return Error.Failure(
                     code: "Operation Exception",
                     description: ex.Message);
@@ -87,95 +83,248 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         {
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
-
     }
 
-    private DynamicParameters PrepBookParams(Book book)
+    public async Task<ErrorOr<IEnumerable<BookDTO>>> GetBooks(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Preparing book parameters for {@book} at {DateTime}", book, DateTime.Now);
-
-        DynamicParameters paramlist = new();
-        paramlist.Add("vTitle", book.Title, DbType.String, ParameterDirection.Input);
-        paramlist.Add("vAuthor", book.Author, DbType.String, ParameterDirection.Input);
-        paramlist.Add("vISBN", book.ISBN, DbType.String, ParameterDirection.Input);
-        paramlist.Add("vPublisher", book.Publisher, DbType.String, ParameterDirection.Input);
-        paramlist.Add("vGenre", book.Genre, DbType.String, ParameterDirection.Input);
-        paramlist.Add("vIsAvailable", book.IsAvailable, DbType.Boolean, ParameterDirection.Input);
-
-        return paramlist;
-    }
-
-    private static ErrorOr<Book?> CheckBookExists(int statusCheck)
-    {
-        switch (statusCheck)
+        try
         {
-            case 201:
-                return BookErrors.BookFoundUnconfirmed;
-            case 202:
-                return BookErrors.BookFound;
-            case 203:
-                return BookErrors.BookFoundInactive;
-            case 401:
-                return BookErrors.BookFoundSuspended;
-            case 404:
-                return BookErrors.BookNotFound;
-            case 409:
-                return BookErrors.BookExits;
-            case 400:
-                return BookErrors.BookBadSearch;
-            case 500:
-                return Error.Failure(description: "Db Search ended with an exception");
-            default:
-                return Error.Failure(description: "unsupported operation");
+            _logger.LogInformation("Getting a list of books at {DateTime}", DateTime.Now);
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Getting all books from the database at {DateTime}", DateTime.Now);
+                var response = await connection.QuerySingleAsync<DbResponse>("Select * from shelve.list_books()");
+
+                if (response.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Books retrieved successfully. Returning book details.");
+                    return JsonSerializer.Deserialize<IEnumerable<BookDTO>>(response.Details, options: null).ToList();
+                }
+                else
+                {
+                    return Error.Failure(
+                          code: response.Status,
+                          description: response.Details);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - retrieving a list of Books encountered an exception: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
     }
 
-    public Task<UserDTO> AddUser(AddUserCommand command)
+    public async Task<ErrorOr<BookDTO>> GetBookById(GetBookDetailsQuery query, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _logger.LogInformation("Getting book details for ISBN {Isbn} at {DateTime}", query.Isbn, DateTime.Now);
+
+            var book = new Book
+            {
+                ISBN = query.Isbn
+            };
+
+            var paramlist = ParamPrep.PrepBookParams(book);
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Shelve.IfBookExists(@vISBN)", paramlist);
+                var status = ErrorStatus.CheckBookExists(dbResponse.StatusCode);
+
+                if (status.FirstError.Code == "Book.BookNotFound")
+                {
+                    _logger.LogInformation("Book does not exist, returning null details.");
+                    return Error.NotFound(
+                            code: dbResponse.StatusCode.ToString(),
+                            description: dbResponse.Details);
+                }
+
+                _logger.LogInformation("Getting book details from the database at {DateTime}", DateTime.Now);
+                var response = await connection.QuerySingleAsync<DbResponse>("Select * from shelve.get_book(@vIsbn)", paramlist);
+
+                if (response.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Book details retrieved successfully. Returning book details.");
+                    return JsonSerializer.Deserialize<BookDTO>(response.Details, options: null);
+                }
+                else
+                {
+                    return Error.Failure(
+                          code: response.Status,
+                          description: response.Details);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - Getting book details encountered an exception: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+
+    public async Task<ErrorOr<BookDTO>> UpdateBook(UpdateBookCommand command, CancellationToken cancellation)
+    {
+        try
+        {
+            _logger.LogInformation("Updating book {book} at {DateTime}", command.Isbn, DateTime.Now);
+
+            var book = new Book
+            {
+                ISBN = command.Isbn,
+                Title = command.Title,
+                Author = command.Author,
+                Publisher = command.Publisher,
+                Genre = command.Genre,
+                IsAvailable = command.IsAvailable ?? false
+            };
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Preparing book parameters for {Book} at {DateTime}", book, DateTime.Now);
+                var paramlist = ParamPrep.PrepBookParams(book);
+
+                _logger.LogInformation("Checking if Book Exist with ISBN ");
+                var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Shelve.IfBookExists(@vISBN)", paramlist);
+
+                var status = ErrorStatus.CheckBookExists(dbResponse.StatusCode);
+
+                if (status.FirstError.Code == "Book.BookNotFound")
+                {
+                    _logger.LogInformation("Book does not exist, can not update book details.");
+
+                    return Error.NotFound(
+                            code: dbResponse.StatusCode.ToString(),
+                            description: dbResponse.Details);
+                }
+                else
+                {
+                    _logger.LogInformation("Updating book details in database.");
+                    dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Shelve.update_book(@vIsbn, @vTitle, @vAuthor, @vPublisher, @vGenre, @vIsAvailable)", paramlist);
+
+                    if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                    {
+                        _logger.LogInformation("Book details successfully updated. Returning book details.");
+                        return JsonSerializer.Deserialize<BookDTO>(dbResponse.Details, options: null);
+                    }
+                    
+                    return Error.Failure(
+                            code: dbResponse.Status,
+                            description: dbResponse.Details);
+                    
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - book saving exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+    
+    public async Task<ErrorOr<BookDTO>> DeleteBook(DeleteBookCommand command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _logger.LogInformation("Deleting book - {book} at {DateTime}", command.Isbn, DateTime.Now);
+
+            var book = new Book
+            {
+                ISBN = command.Isbn
+            };
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Preparing book parameters for {Book} at {DateTime}", book, DateTime.Now);
+                var paramlist = ParamPrep.PrepBookParams(book);
+
+                _logger.LogInformation("Checking if Book Exist with ISBN ");
+                var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Shelve.IfBookExists(@vISBN)", paramlist);
+
+                var status = ErrorStatus.CheckBookExists(dbResponse.StatusCode);
+
+                if (status.FirstError.Code == "Book.BookNotFound")
+                {
+                    _logger.LogInformation("Book does not exist, can not delete book details.");
+
+                    return Error.NotFound(
+                            code: dbResponse.StatusCode.ToString(),
+                            description: dbResponse.Details);
+                }
+
+                _logger.LogInformation("Deleting book details from database.");
+                dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Shelve.remove_book(@vIsbn)", paramlist);
+
+                if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Book details successfully updated. Returning book details.");
+                    return JsonSerializer.Deserialize<BookDTO>(dbResponse.Details, options: null);
+                }
+
+                return Error.Failure(
+                        code: dbResponse.Status,
+                        description: dbResponse.Details);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - book saving exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+
+    public Task<ErrorOr<UserDTO>> AddUser(User command, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<CheckoutDTO> BooksNotReturned(GetBooksNotReturnedQuery query)
+    public Task<ErrorOr<UserDTO>> UpdateUser(User command, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<CheckoutDTO> CheckoutBooks(CheckoutBooksCommand command)
+    public Task<ErrorOr<UserDTO>> GetUserById(GetUserDetailsQuery query, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<BookDTO> DeleteBook(DeleteBookCommand command)
+    public Task<CheckoutDTO> BooksNotReturned(GetBooksNotReturnedQuery query, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<BookDTO> GetBookById(GetBookDetailsQuery query)
+    public Task<CheckoutDTO> CheckoutBooks(Checkout command, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<BookDTO>> GetBooks(GetAllBooksQuery query)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDTO> GetUserById(GetUserDetailsQuery query)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<CheckoutDTO> ReturnBooks(ReturnBooksCommand command)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BookDTO> UpdateBook(UpdateBookCommand command)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDTO> UpdateUser(UpdateUserCommand command)
+    public Task<CheckoutDTO> ReturnBooks(ReturnBooksCommand command, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

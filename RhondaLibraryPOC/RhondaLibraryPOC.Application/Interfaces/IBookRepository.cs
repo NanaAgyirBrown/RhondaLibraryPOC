@@ -8,9 +8,9 @@ namespace RhondaLibraryPOC.Application.Interfaces;
 
 public interface IBookRepository
 {
-    Task<IEnumerable<BookDTO>> GetBooks(GetAllBooksQuery query);
-    Task<BookDTO> GetBookById(GetBookDetailsQuery query);
-    Task<ErrorOr<Book?>> AddBook(Book book);
-    Task<BookDTO> UpdateBook(UpdateBookCommand command);
-    Task<BookDTO> DeleteBook(DeleteBookCommand command);
+    Task<ErrorOr<BookDTO?>> AddBook(Book book, CancellationToken cancellation);
+    Task<ErrorOr<IEnumerable<BookDTO>>> GetBooks(CancellationToken cancellation);
+    Task<ErrorOr<BookDTO>> GetBookById(GetBookDetailsQuery query, CancellationToken cancellation);
+    Task<ErrorOr<BookDTO>> UpdateBook(UpdateBookCommand command, CancellationToken cancellation);
+    Task<ErrorOr<BookDTO>> DeleteBook(DeleteBookCommand command, CancellationToken cancellation);
 }
