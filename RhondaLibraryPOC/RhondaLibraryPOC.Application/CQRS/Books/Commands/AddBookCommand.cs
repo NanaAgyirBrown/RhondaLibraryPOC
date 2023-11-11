@@ -6,7 +6,7 @@ using RhondaLibraryPOC.Domain.Entity;
 
 namespace RhondaLibraryPOC.Application.CQRS.Books.Commands;
 
-public class AddBookCommand : IRequest<ErrorOr<Book>>
+public class AddBookCommand : IRequest<ErrorOr<BookDTO?>>
 {
     public BookDTO BookDTO { get; set; }
     public AddBookCommand(BookDTO bookDTO)
@@ -16,14 +16,15 @@ public class AddBookCommand : IRequest<ErrorOr<Book>>
 }
 
 
-public class AddBookHandler : IRequestHandler<AddBookCommand, ErrorOr<Book>>
+public class AddBookHandler : IRequestHandler<AddBookCommand, ErrorOr<BookDTO?>>
 {
     private readonly IBookRepository _bookRepository;
     public AddBookHandler(IBookRepository bookRepository)
     {
         _bookRepository = bookRepository;
     }
-    public async Task<ErrorOr<Book>> Handle(AddBookCommand command, CancellationToken cancellationToken)
+
+    public async Task<ErrorOr<BookDTO?>> Handle(AddBookCommand command, CancellationToken cancellationToken)
     {
         var book = new Book
         {
@@ -35,7 +36,7 @@ public class AddBookHandler : IRequestHandler<AddBookCommand, ErrorOr<Book>>
             IsAvailable = command.BookDTO.IsAvailable
         };
 
-        var result = await _bookRepository.AddBook(book);
+        var result = await _bookRepository.AddBook(book, cancellationToken);
 
         return result;
     }
