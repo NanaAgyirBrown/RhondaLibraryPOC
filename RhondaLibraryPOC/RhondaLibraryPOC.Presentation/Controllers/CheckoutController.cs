@@ -1,49 +1,31 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RhondaLibraryPOC.Application.CQRS.Checkouts;
+using RhondaLibraryPOC.Application.CQRS.Checkouts.Commands;
+using RhondaLibraryPOC.Presentation.Common;
+using System.Net;
 
 namespace RhondaLibraryPOC.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class CheckoutController : ControllerBase
 {
-    private readonly IMediator _mediator;
     private readonly ILogger<CheckoutController> _logger;
+    private readonly IMediator _mediatR;
 
-    public CheckoutController(IMediator mediator, ILogger<CheckoutController> logger)
+    public CheckoutController(ILogger<CheckoutController> logger, IMediator mediatR)
     {
-        _mediator = mediator;
         _logger = logger;
+        _mediatR = mediatR;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<CheckoutDTO>>> Get()
+    [HttpPost(Name = "Checkout")]
+    public async Task<IActionResult> CheckoutBook([FromBody]CheckoutBooksCommand command)
     {
-        return Ok();
+        _logger.LogInformation("Checking out a book");
+        var result = await _mediatR.Send(command);
+        return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CheckoutDTO>> Get(Guid id)
-    {
-        return Ok();
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<CheckoutDTO>> Post(CheckoutDTO checkout)
-    {
-        return Ok();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult<CheckoutDTO>> Put(Guid id, CheckoutDTO checkout)
-    {
-        return Ok();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<CheckoutDTO>> Delete(Guid id)
-    {
-        return Ok();
-    }   
 }

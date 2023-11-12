@@ -10,7 +10,7 @@ namespace RhondaLibraryPOC.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Roles = "Admin, Librarian")]
+[Authorize]
 public class UserController : ControllerBase    
 {
     private readonly ILogger<UserController> _logger;
@@ -23,31 +23,18 @@ public class UserController : ControllerBase
     }
 
     [HttpPost(Name = "RegisterUser")]
-    public async Task<IActionResult> AddUser([FromBody] AddUserCommand command)
+    public async Task<IActionResult> AddUser([FromBody]AddUserCommand command)
     {
         _logger.LogInformation("Adding a new user");
         var result = await _mediatR.Send(command);
         return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
 
-    [HttpGet(Name = "GetAllUsers")]
-    public async Task<IActionResult> GetAllUsers()
-    {
-        /*_logger.LogInformation("Getting all users");
-         *        var query = new GetAllUsersQuery();
-         *               var result = await _mediatR.Send(query);
-         *                      return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);*/
-
-        return Ok();
-    }
-
     [HttpGet("{Id}", Name = "GetUserById")]
     public async Task<IActionResult> GetUserById([FromRoute] GetUserDetailsQuery query)
     {
-        /*_logger.LogInformation("Getting user by id");
-         *         *        var result = await _mediatR.Send(query);
-         *                 *               return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);*/
-
-        return Ok();
+        _logger.LogInformation("Getting user by id");
+        var result = await _mediatR.Send(query);
+        return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
 }

@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddScoped<IBookRepository, LibraryRepository>();
         services.AddScoped<IUserRepository, LibraryRepository>();
         services.AddScoped<ICheckoutRepository, LibraryRepository>();
+        services.AddScoped<IExtrasRepository, LibraryRepository>();
 
         services.AddTransient<IDataSource>(_ => new DbDataSource(configuration.GetValue<string>("ConnectionStrings:PostgresConnection")));
 

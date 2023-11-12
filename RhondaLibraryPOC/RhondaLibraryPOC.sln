@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RhondaLibraryPOC.Applicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RhondaLibraryPOC.Infrastructure", "RhondaLibraryPOC.Infrastructure\RhondaLibraryPOC.Infrastructure.csproj", "{8495A05F-7285-4DEE-AA89-5BA30BAA8979}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhondaLibraryPOC.Presentation", "RhondaLibraryPOC.Presentation\RhondaLibraryPOC.Presentation.csproj", "{C04F392E-38A3-4922-A70F-40640AEF4A84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RhondaLibraryPOC.Presentation", "RhondaLibraryPOC.Presentation\RhondaLibraryPOC.Presentation.csproj", "{C04F392E-38A3-4922-A70F-40640AEF4A84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhondaLibraryPOC.UnitTest", "RhondaLibraryPOC.UnitTest\RhondaLibraryPOC.UnitTest.csproj", "{C553EA81-D887-46E8-8C61-E8C00A8789F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C04F392E-38A3-4922-A70F-40640AEF4A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C04F392E-38A3-4922-A70F-40640AEF4A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C04F392E-38A3-4922-A70F-40640AEF4A84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C553EA81-D887-46E8-8C61-E8C00A8789F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C553EA81-D887-46E8-8C61-E8C00A8789F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C553EA81-D887-46E8-8C61-E8C00A8789F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C553EA81-D887-46E8-8C61-E8C00A8789F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

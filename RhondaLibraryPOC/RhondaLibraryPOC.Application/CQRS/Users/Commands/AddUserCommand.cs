@@ -17,7 +17,7 @@ public class AddUserCommand : IRequest<ErrorOr<UserDTO>>
     }
 }
 
-public class AddUserHandler : IRequest<ErrorOr<UserDTO>>
+public class AddUserHandler : IRequestHandler<AddUserCommand, ErrorOr<UserDTO>>
 {
     private readonly IUserRepository _userRepository;
     public AddUserHandler(IUserRepository userRepository)
