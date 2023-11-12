@@ -7,6 +7,7 @@ using System.Linq;
 using ErrorOr;
 using RhondaLibraryPOC.Presentation.Common;
 using Microsoft.AspNetCore.Authorization;
+using RhondaLibraryPOC.Application.Checkouts.Commands;
 
 namespace RhondaLibraryPOC.Presentation.Controllers;
 
@@ -22,8 +23,8 @@ public class BookController : ControllerBase
         _mediatR = mediatR;
     }
 
-    [Authorize(Roles = "Admin, Librarian")]
     [HttpPost(Name = "AddBook")]
+    [Authorize]
     public async Task<IActionResult> AddBook([FromBody] AddBookCommand command)
     {
         _logger.LogInformation("Adding a new book");
@@ -47,9 +48,9 @@ public class BookController : ControllerBase
         var result = await _mediatR.Send(query);
         return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
-
-    [Authorize(Roles = "Admin, Librarian")]
+ 
     [HttpPut(Name = "UpdateBook")]
+    [Authorize("Admin")]
     public async Task<IActionResult> UpdateBook([FromBody] UpdateBookCommand command)
     {
         _logger.LogInformation("Updating book");
@@ -57,8 +58,8 @@ public class BookController : ControllerBase
         return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{Isbn}" ,Name = "DeleteBook")]
+    [Authorize("Admin")]
     public async Task<IActionResult> DeleteBook([FromRoute] DeleteBookCommand command)
     {
         _logger.LogInformation("Deleting book");

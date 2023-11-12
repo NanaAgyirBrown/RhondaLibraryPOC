@@ -6,17 +6,12 @@ using RhondaLibraryPOC.Application.Users;
 
 namespace RhondaLibraryPOC.Application.CQRS.Users.Queries;
 
-public class GetUserDetailsQuery : IRequest<ErrorOr<UserDTO>>
+public class GetUserDetailsQuery : IRequest<ErrorOr<UserRecord>>
 {
-    public Guid Id { get; set; }
-
-    public GetUserDetailsQuery(Guid id)
-    {
-        Id = id;
-    }
+    public string Id { get; set; }
 } 
 
-public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, ErrorOr<UserDTO>>
+public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, ErrorOr<UserRecord>>
 {
     private readonly IUserRepository _userRepository;
 
@@ -25,10 +20,11 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, E
         _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<UserDTO>> Handle(GetUserDetailsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<UserRecord>> Handle(GetUserDetailsQuery request, CancellationToken cancellationToken)
     {
 
         var user = await _userRepository.GetUserById(request, cancellationToken);
+
         return user;
     }
 }

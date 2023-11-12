@@ -1,14 +1,27 @@
 ﻿
+using ErrorOr;
+using RhondaLibraryPOC.Application.Interfaces;
+using System.Linq.Expressions;
+
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
 
-internal static class Extras
+public class Extras
 {
-    internal static DateTime CalculateReturnDate(DateTime checkoutDate, string Genre)
+    private readonly IExtrasRepository _extrasRepository;
+
+    public Extras(IExtrasRepository extrasRepository)
     {
-        return checkoutDate.AddDays(ReadPeriod(Genre));
+        _extrasRepository = extrasRepository;
     }
 
-    internal static decimal IsOverdue(DateTime returnDate)
+    public async Task<DateTime> CalculateReturnDate(DateTime checkoutDate, string isbn)
+    {
+        int extraData = await ReadExtraData(isbn);
+        
+        return checkoutDate.AddDays(extraData);;
+    }
+
+    public static decimal IsOverdue(DateTime returnDate)
     {
         if(returnDate <= DateTime.Now)
         {
@@ -18,9 +31,16 @@ internal static class Extras
         return 0.00m;
     }
 
-    static decimal CalculateFine(DateTime returnDate)
+    public async Task<ErrorOr<bool>> GetBookExists(string isbn, CancellationToken cancellationToken)
     {
-        return CalculateFineAmount(returnDate) * 0.25m;
+        var result = await _extrasRepository.CheckBookEsists(isbn);
+
+        return result;
+    }
+
+    private static decimal CalculateFine(DateTime returnDate)
+    {
+        return CalculateFineAmount(returnDate) * (decimal) (DateTime.Now - returnDate).TotalDays;
     }
 
     private static decimal CalculateFineAmount(DateTime returnDate)
@@ -29,22 +49,29 @@ internal static class Extras
 
         return daysOverdue switch
         {
-            var days when days <= 7 => 0.25m,
-            var days when days <= 14 => 1.50m,
-            var days when days <= 21 => 3.75m,
-            var days when days > 21 => 15.00m,
-            _ => 0.25m
+            var days when days <= 7 => CheckoutSettings.OverdueFineCharges.FirstWeek,
+            var days when days <= 14 => CheckoutSettings.OverdueFineCharges.SecondWeek,
+            var days when days <= 21 => CheckoutSettings.OverdueFineCharges.ThirdWeek,
+            var days when days > 21 => CheckoutSettings.OverdueFineCharges.Forever,
+            _ => 0.00m
         };
     }
 
-    static int ReadPeriod(string genre)
+    private async Task<int> ReadExtraData(string Isbn)
     {
-        return genre switch
+        var result = await _extrasRepository.GetTitleGenre(Isbn);
+
+        if(string.IsNullOrEmpty(result.Value.Genre))
         {
-            "Fiction" => 7,
-            "Non-Fiction" => 14,
-            "Reference" => 7,
-            _ => 14
-        };
+            return result.Value.Genre switch
+            {
+                "Fiction" => CheckoutSettings.ReadPeriod.Fiction,
+                "Non-Fiction" => CheckoutSettings.ReadPeriod.NonFiction,
+                "Reference" => CheckoutSettings.ReadPeriod.Reference,
+                _ => CheckoutSettings.ReadPeriod.Others
+            };
+        }
+
+        return CheckoutSettings.ReadPeriod.Others;
     }
 }

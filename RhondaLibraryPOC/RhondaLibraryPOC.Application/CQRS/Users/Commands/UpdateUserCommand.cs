@@ -9,10 +9,10 @@ namespace RhondaLibraryPOC.Application.Checkouts.Commands;
 
 public class UpdateUserCommand : IRequest<ErrorOr<UserDTO>>
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public UserDTO UserDTO { get; set; }
 
-    public UpdateUserCommand(Guid id, UserDTO userDTO)
+    public UpdateUserCommand(string id, UserDTO userDTO)
     {
         Id = id;
         UserDTO = userDTO;

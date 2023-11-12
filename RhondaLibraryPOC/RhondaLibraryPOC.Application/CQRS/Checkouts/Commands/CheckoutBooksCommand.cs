@@ -2,42 +2,58 @@
 using ErrorOr;
 using MediatR;
 using RhondaLibraryPOC.Application.Interfaces;
-using RhondaLibraryPOC.Domain.Entity;
 
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Commands;
 
-public class CheckoutBooksCommand : IRequest<ErrorOr<CheckoutDTO>>
+public class CheckoutBooksCommand : IRequest<ErrorOr<CheckoutRecord>>
 {
-    public CheckoutDTO CheckoutDTO { get; set; }
+    public CheckoutBookList _checkoutDetails { get; set; }
     
-    public CheckoutBooksCommand(CheckoutDTO checkoutDTO)
+    public CheckoutBooksCommand(CheckoutBookList checkoutBookList)
     {
-        CheckoutDTO = checkoutDTO;
+       _checkoutDetails = checkoutBookList;
     }
 }
 
-public class CheckoutBooksHandler : IRequestHandler<CheckoutBooksCommand, ErrorOr<CheckoutDTO>>
+public class CheckoutBooksHandler : IRequestHandler<CheckoutBooksCommand, ErrorOr<CheckoutRecord>>
 {
     private readonly ICheckoutRepository _checkoutRepository;
-    public CheckoutBooksHandler(ICheckoutRepository checkoutRepository)
+    private readonly Extras.Extras _extras;
+
+    public CheckoutBooksHandler(ICheckoutRepository checkoutRepository,  Extras.Extras extras)
     {
         _checkoutRepository = checkoutRepository;
+        _extras = extras;
     }
 
-    public async Task<ErrorOr<CheckoutDTO>> Handle(CheckoutBooksCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<CheckoutRecord>> Handle(CheckoutBooksCommand command, CancellationToken cancellationToken)
     {
-        var checkout = new Checkout
+        if(command._checkoutDetails.BookList.Count() > 5)
         {
-            UserId = command.CheckoutDTO.Userid,
-            BookId = command.CheckoutDTO.BookId,
-            CheckoutDate = command.CheckoutDTO.CheckoutDate,
-            ReturnDate = Extras.Extras.CalculateReturnDate(DateTime.Now, command.CheckoutDTO.Book?.Genre),
-            IsReturned = command.CheckoutDTO.Returned,
-            Fine = 0.00m
-        };
+            return Error.Validation(
+                    code: "TooManyBooks",
+                    description: "You can only checkout 5 books at a time."
+                );
+        }
 
-        var result = await _checkoutRepository.CheckoutBooks(checkout, cancellationToken);
+        // Validing if all books are available
+        foreach(var book in command._checkoutDetails.BookList)
+        {
+            var bookResult = await _extras.GetBookExists(book.BookId, cancellationToken);
+
+            if(bookResult.IsError)
+                return Error.Validation(
+                       code: "BookNotFound",
+                       description: $"Book with ISBN - {book.BookId} not found."                                                                                                                                                                                           );
+        }
+
+        foreach(var book in command._checkoutDetails.BookList)
+        {
+            book.ExpectedReturnDate = await _extras.CalculateReturnDate(DateTime.Now, book.BookId);
+        }
+
+        var result = await _checkoutRepository.CheckoutBooks(command, cancellationToken);
 
         return result;
     }
-}   
+} 
