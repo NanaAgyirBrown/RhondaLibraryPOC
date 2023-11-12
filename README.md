@@ -36,5 +36,7 @@ Ensure you have the following prerequisites installed:
    ```sh
    https://github.com/NanaAgyirBrown/RhondaLibraryPOC.git
    ```
-2. Install PostgreSQL or any compactible Database
+2. Install PostgreSQL or any compatible Database
+3. Run SQL script attached to repo
+4. 
    
