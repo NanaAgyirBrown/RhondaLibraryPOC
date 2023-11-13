@@ -4,6 +4,12 @@
 
 RhondaLibraryPOC is a Proof of Concept (POC) project for a library management system. It provides functionality for managing books, users, and checkout processes. The system includes features such as overdue calculations and fine accruals. This Project uses principles from Clean Architecture.
 
+## Prerequisites
+Ensure you have the following prerequisites installed:
+
+- .NET SDK
+- PostgreSQL (or another compatible database)
+
 ## Libraries Used
 
 - **[MediatR](link_to_library_1):** The main goal is to design reusable components with “loose coupling.”.
