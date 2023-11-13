@@ -347,6 +347,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
     }
+    
     public async Task<ErrorOr<UserRecord>> GetUserById(GetUserDetailsQuery query, CancellationToken cancellationToken)
     {
         try
@@ -411,7 +412,6 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         throw new NotImplementedException();
     }
 
-
     public Task<CheckoutDTO> BooksNotReturned(GetBooksNotReturnedQuery query, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
@@ -472,7 +472,6 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         {
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
-
     }
 
     public async Task<ErrorOr<(string title, string Genre)>> GetTitleGenre(string Isbn)

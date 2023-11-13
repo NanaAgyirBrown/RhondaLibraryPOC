@@ -1,5 +1,4 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using RhondaLibraryPOC.Application.Interfaces;
 
@@ -44,7 +43,8 @@ public class CheckoutBooksHandler : IRequestHandler<CheckoutBooksCommand, ErrorO
             if(bookResult.IsError)
                 return Error.Validation(
                        code: "BookNotFound",
-                       description: $"Book with ISBN - {book.BookId} not found."                                                                                                                                                                                           );
+                       description: $"Book with ISBN - {book.BookId} not found."    
+                    );
         }
 
         foreach(var book in command._checkoutDetails.BookList)

@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RhondaLibraryPOC.Application;
-using RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
 using RhondaLibraryPOC.Infrastructure;
 using RhondaLibraryPOC.Presentation;
 using System.Text;
@@ -12,6 +10,10 @@ Console.Title = "Rhonda Library POC Microservice";
 var builder = WebApplication.CreateBuilder(args);
 
 IConfiguration _configuration = builder.Configuration;
+IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .Build();
 
 // Add services to the container.
 builder.Services
@@ -50,12 +52,6 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-        options => builder.Configuration.Bind("JwtSettings", options))
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-        options => builder.Configuration.Bind("CookieSettings", options));*/
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>

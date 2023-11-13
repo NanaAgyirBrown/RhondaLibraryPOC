@@ -6,8 +6,8 @@ namespace RhondaLibraryPOC.Application.CQRS.Checkouts;
 
 public class CheckoutBookList
 {
-    public string Userid { get; set; }
-    public IEnumerable<CheckoutBook> BookList { get; set; }
+    public string? Userid { get; set; }
+    public IEnumerable<CheckoutBook>? BookList { get; set; }
     public DateTime CheckoutDate { get; set; }
 }
 
@@ -34,6 +34,6 @@ public class CheckoutBook
 
 public record CheckoutRecord
 {
-    public string CheckoutId { get; set; }
+    public string? CheckoutId { get; set; }
     public UserRecord User { get; set; }
 }

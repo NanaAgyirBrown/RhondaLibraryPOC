@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using RhondaLibraryPOC.Application.CQRS.Checkouts;
 using RhondaLibraryPOC.Domain.Entity;
 using System.Data;

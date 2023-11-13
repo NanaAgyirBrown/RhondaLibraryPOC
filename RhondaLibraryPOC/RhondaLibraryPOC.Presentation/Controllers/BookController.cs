@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using RhondaLibraryPOC.Application.CQRS.Books.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books.Queries;
 using System.Net;
-using System.Linq;
-using ErrorOr;
 using RhondaLibraryPOC.Presentation.Common;
 using Microsoft.AspNetCore.Authorization;
-using RhondaLibraryPOC.Application.Checkouts.Commands;
 
 namespace RhondaLibraryPOC.Presentation.Controllers;
 

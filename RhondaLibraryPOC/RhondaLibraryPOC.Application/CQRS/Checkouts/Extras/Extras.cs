@@ -1,7 +1,6 @@
 ﻿
 using ErrorOr;
 using RhondaLibraryPOC.Application.Interfaces;
-using System.Linq.Expressions;
 
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
 
