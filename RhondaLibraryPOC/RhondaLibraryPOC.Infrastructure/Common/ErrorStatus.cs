@@ -9,51 +9,33 @@ internal static class ErrorStatus
 {
     internal static ErrorOr<BookDTO?> CheckBookExists(int statusCheck)
     {
-        switch (statusCheck)
+        return statusCheck switch
         {
-            case 201:
-                return BookErrors.BookFoundRatedX;
-            case 202:
-                return BookErrors.BookFound;
-            case 203:
-                return BookErrors.BookFoundInactive;
-            case 401:
-                return BookErrors.BookFoundSuspended;
-            case 404:
-                return BookErrors.BookNotFound;
-            case 409:
-                return BookErrors.BookExits;
-            case 400:
-                return BookErrors.BookBadSearch;
-            case 500:
-                return Error.Failure(description: "Db Search ended with an exception");
-            default:
-                return Error.Failure(description: "unsupported operation");
-        }
+            201 => (ErrorOr<BookDTO?>)BookErrors.BookFoundRatedX,
+            202 => (ErrorOr<BookDTO?>)BookErrors.BookFound,
+            203 => (ErrorOr<BookDTO?>)BookErrors.BookFoundInactive,
+            401 => (ErrorOr<BookDTO?>)BookErrors.BookFoundSuspended,
+            404 => (ErrorOr<BookDTO?>)BookErrors.BookNotFound,
+            409 => (ErrorOr<BookDTO?>)BookErrors.BookExits,
+            400 => (ErrorOr<BookDTO?>)BookErrors.BookBadSearch,
+            500 => (ErrorOr<BookDTO?>)Error.Failure(description: "Db Search ended with an exception"),
+            _ => (ErrorOr<BookDTO?>)Error.Failure(description: "unsupported operation"),
+        };
     }
 
     internal static ErrorOr<UserDTO?> UserSearchChecker(int statusCheck)
     {
-        switch (statusCheck)
+        return statusCheck switch
         {
-            case 201:
-                return UserErrors.UserFoundUnconfirmed;
-            case 202:
-                return UserErrors.UserFound;
-            case 203:
-                return UserErrors.UserFoundInactive;
-            case 401:
-                return UserErrors.UserFoundSuspended;
-            case 404:
-                return UserErrors.UserNotFound;
-            case 409:
-                return UserErrors.UserExits;
-            case 400:
-                return UserErrors.UserBadSearch;
-            case 500:
-                return Error.Failure(description: "Db Search ended with an exception");
-            default:
-                return Error.Failure(description: "unsupported operation");
-        }
+            201 => (ErrorOr<UserDTO?>)UserErrors.UserFoundUnconfirmed,
+            202 => (ErrorOr<UserDTO?>)UserErrors.UserFound,
+            203 => (ErrorOr<UserDTO?>)UserErrors.UserFoundInactive,
+            401 => (ErrorOr<UserDTO?>)UserErrors.UserFoundSuspended,
+            404 => (ErrorOr<UserDTO?>)UserErrors.UserNotFound,
+            409 => (ErrorOr<UserDTO?>)UserErrors.UserExits,
+            400 => (ErrorOr<UserDTO?>)UserErrors.UserBadSearch,
+            500 => (ErrorOr<UserDTO?>)Error.Failure(description: "Db Search ended with an exception"),
+            _ => (ErrorOr<UserDTO?>)Error.Failure(description: "unsupported operation"),
+        };
     }
 }

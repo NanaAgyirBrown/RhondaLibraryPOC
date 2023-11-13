@@ -16,13 +16,13 @@ public class Extras
     public async Task<DateTime> CalculateReturnDate(DateTime checkoutDate, string isbn)
     {
         int extraData = await ReadExtraData(isbn);
-        
-        return checkoutDate.AddDays(extraData);;
+
+        return checkoutDate.AddDays(extraData); ;
     }
 
     public static decimal IsOverdue(DateTime returnDate)
     {
-        if(returnDate <= DateTime.Now)
+        if (returnDate <= DateTime.Now)
         {
             return CalculateFine(returnDate);
         }
@@ -39,7 +39,7 @@ public class Extras
 
     private static decimal CalculateFine(DateTime returnDate)
     {
-        return CalculateFineAmount(returnDate) * (decimal) (DateTime.Now - returnDate).TotalDays;
+        return CalculateFineAmount(returnDate) * (decimal)(DateTime.Now - returnDate).TotalDays;
     }
 
     private static decimal CalculateFineAmount(DateTime returnDate)
@@ -60,7 +60,7 @@ public class Extras
     {
         var result = await _extrasRepository.GetTitleGenre(Isbn);
 
-        if(string.IsNullOrEmpty(result.Value.Genre))
+        if (string.IsNullOrEmpty(result.Value.Genre))
         {
             return result.Value.Genre switch
             {

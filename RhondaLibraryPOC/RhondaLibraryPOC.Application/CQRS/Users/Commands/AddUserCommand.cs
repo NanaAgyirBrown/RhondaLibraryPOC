@@ -10,7 +10,7 @@ namespace RhondaLibraryPOC.Application.Checkouts.Commands;
 public class AddUserCommand : IRequest<ErrorOr<UserDTO>>
 {
     public UserDTO UserDTO { get; set; }
-    
+
     public AddUserCommand(UserDTO userDTO)
     {
         UserDTO = userDTO;

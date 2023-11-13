@@ -9,7 +9,7 @@ namespace RhondaLibraryPOC.Application.CQRS.Users.Queries;
 public class GetUserDetailsQuery : IRequest<ErrorOr<UserRecord>>
 {
     public string Id { get; set; }
-} 
+}
 
 public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, ErrorOr<UserRecord>>
 {

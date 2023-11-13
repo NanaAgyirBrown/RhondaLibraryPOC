@@ -22,7 +22,7 @@ public class CheckoutController : ControllerBase
     }
 
     [HttpPost(Name = "Checkout")]
-    public async Task<IActionResult> CheckoutBook([FromBody]CheckoutBooksCommand command)
+    public async Task<IActionResult> CheckoutBook([FromBody] CheckoutBooksCommand command)
     {
         _logger.LogInformation("Checking out a book");
         var result = await _mediatR.Send(command);

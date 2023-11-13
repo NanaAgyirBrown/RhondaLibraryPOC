@@ -23,6 +23,6 @@ public class GetAllBooksHandler : IRequestHandler<GetAllBooksQuery, ErrorOr<IEnu
 
     async Task<ErrorOr<IEnumerable<BookDTO>>> IRequestHandler<GetAllBooksQuery, ErrorOr<IEnumerable<BookDTO>>>.Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
     {
-       return await _bookRepository.GetBooks(cancellationToken);
+        return await _bookRepository.GetBooks(cancellationToken);
     }
 }

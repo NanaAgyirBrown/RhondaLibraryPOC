@@ -1,12 +1,6 @@
-﻿using MediatR;
-using RhondaLibraryPOC.Application.CQRS.Books;
+﻿using RhondaLibraryPOC.Application.CQRS.Books;
 using RhondaLibraryPOC.Application.CQRS.Checkouts;
 using RhondaLibraryPOC.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RhondaLibraryPOC.UnitTest.DataMock;
 
@@ -233,4 +227,4 @@ public class MockData
 
         return CheckoutDTOs[index].User.Id;
     }
-} 
+}
