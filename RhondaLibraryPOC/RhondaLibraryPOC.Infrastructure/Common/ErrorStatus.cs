@@ -1,5 +1,4 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 using RhondaLibraryPOC.Application.CQRS.Books;
 using RhondaLibraryPOC.Application.Users;
 using RhondaLibraryPOC.Domain.Common.Errors;

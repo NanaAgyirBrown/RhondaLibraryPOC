@@ -1,5 +1,4 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 using MediatR;
 using RhondaLibraryPOC.Application.Interfaces;
 using RhondaLibraryPOC.Domain.Entity;
@@ -14,7 +13,6 @@ public class AddBookCommand : IRequest<ErrorOr<BookDTO?>>
         BookDTO = bookDTO;
     }
 }
-
 
 public class AddBookHandler : IRequestHandler<AddBookCommand, ErrorOr<BookDTO?>>
 {

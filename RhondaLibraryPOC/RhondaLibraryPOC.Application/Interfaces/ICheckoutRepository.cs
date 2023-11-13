@@ -1,9 +1,7 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 using RhondaLibraryPOC.Application.CQRS.Checkouts;
 using RhondaLibraryPOC.Application.CQRS.Checkouts.Commands;
 using RhondaLibraryPOC.Application.CQRS.Checkouts.Queries;
-using RhondaLibraryPOC.Domain.Entity;
 
 namespace RhondaLibraryPOC.Application.Interfaces;
 
