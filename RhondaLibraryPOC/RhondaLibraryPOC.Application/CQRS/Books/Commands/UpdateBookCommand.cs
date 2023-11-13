@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
 using RhondaLibraryPOC.Application.Interfaces;
-using RhondaLibraryPOC.Domain.Entity;
 
 namespace RhondaLibraryPOC.Application.CQRS.Books.Commands;
 

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using ErrorOr;
+﻿using ErrorOr;
 using FakeItEasy;
 using FluentAssertions;
 using MediatR;
@@ -10,6 +9,7 @@ using RhondaLibraryPOC.Application.CQRS.Books.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books.Queries;
 using RhondaLibraryPOC.Presentation.Controllers;
 using RhondaLibraryPOC.UnitTest.DataMock;
+using System.Net;
 
 namespace RhondaLibraryPOC.UnitTest.ControllersTest
 {

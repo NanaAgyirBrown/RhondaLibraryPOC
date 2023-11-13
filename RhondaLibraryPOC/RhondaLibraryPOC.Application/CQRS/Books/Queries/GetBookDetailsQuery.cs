@@ -5,10 +5,10 @@ using RhondaLibraryPOC.Application.Interfaces;
 
 namespace RhondaLibraryPOC.Application.CQRS.Books.Queries;
 
-public class GetBookDetailsQuery :IRequest<ErrorOr<BookDTO>>
+public class GetBookDetailsQuery : IRequest<ErrorOr<BookDTO>>
 {
     public string? Isbn { get; set; }
-}       
+}
 
 public class GetBookDetailsHandler : IRequestHandler<GetBookDetailsQuery, ErrorOr<BookDTO>>
 {

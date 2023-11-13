@@ -220,11 +220,11 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
                         _logger.LogInformation("Book details successfully updated. Returning book details.");
                         return JsonSerializer.Deserialize<BookDTO>(dbResponse.Details, options: null);
                     }
-                    
+
                     return Error.Failure(
                             code: dbResponse.Status,
                             description: dbResponse.Details);
-                    
+
                 }
             }
         }
@@ -240,7 +240,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
     }
-    
+
     public async Task<ErrorOr<BookDTO>> DeleteBook(DeleteBookCommand command, CancellationToken cancellationToken)
     {
         try
@@ -347,12 +347,12 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
     }
-    
+
     public async Task<ErrorOr<UserRecord>> GetUserById(GetUserDetailsQuery query, CancellationToken cancellationToken)
     {
         try
         {
-            _logger.LogInformation("Retrieving details of {User} at {DateTime}", query.Id , DateTime.Now);
+            _logger.LogInformation("Retrieving details of {User} at {DateTime}", query.Id, DateTime.Now);
 
             using (var connection = await _dataSource.CreateConnection())
             {
@@ -361,7 +361,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
                 var user = new User
                 {
                     Id = query.Id
-                };  
+                };
 
                 var paramlist = ParamPrep.PrepUserParams(user);
 
@@ -429,7 +429,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
             _logger.LogInformation("Checking out Books at {DateTime}", DateTime.Now);
 
             using (var connection = await _dataSource.CreateConnection())
-            {                
+            {
                 _logger.LogInformation("Preparing checkout parameters at {DateTime}", DateTime.Now);
                 var paramlist = ParamPrep.PrepCheckoutParams(command._checkoutDetails);
 
@@ -500,7 +500,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
                 {
                     _logger.LogInformation("Book does not exist, getting Title and Genre.....");
                     var bookRet = JsonSerializer.Deserialize<BookDTO>(dbResponse.Details, options: null);
-                    
+
                     return (bookRet.Title, bookRet.Genre);
                 }
                 else
@@ -515,7 +515,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         catch (Exception ex)
         {
             _logger.LogInformation("LibraryRepository - book exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
-            
+
             return Error.Failure(
                     code: "Operation Exception",
                     description: ex.Message);

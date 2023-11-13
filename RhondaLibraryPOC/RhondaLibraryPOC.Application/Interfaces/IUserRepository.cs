@@ -1,6 +1,5 @@
 ﻿
 using ErrorOr;
-using RhondaLibraryPOC.Application.Checkouts.Commands;
 using RhondaLibraryPOC.Application.CQRS.Users.Queries;
 using RhondaLibraryPOC.Application.Users;
 using RhondaLibraryPOC.Domain.Entity;

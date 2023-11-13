@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RhondaLibraryPOC.Application.CQRS.Books.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books.Queries;
-using System.Net;
 using RhondaLibraryPOC.Presentation.Common;
-using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace RhondaLibraryPOC.Presentation.Controllers;
 
@@ -39,13 +39,13 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("{Isbn}", Name = "GetBookByIsbn")]
-    public async Task<IActionResult> GetBookByIsbn([FromRoute]GetBookDetailsQuery query)
+    public async Task<IActionResult> GetBookByIsbn([FromRoute] GetBookDetailsQuery query)
     {
         _logger.LogInformation("Getting book by isbn");
         var result = await _mediatR.Send(query);
         return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
- 
+
     [HttpPut(Name = "UpdateBook")]
     [Authorize("Admin")]
     public async Task<IActionResult> UpdateBook([FromBody] UpdateBookCommand command)
@@ -55,7 +55,7 @@ public class BookController : ControllerBase
         return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
     }
 
-    [HttpDelete("{Isbn}" ,Name = "DeleteBook")]
+    [HttpDelete("{Isbn}", Name = "DeleteBook")]
     [Authorize("Admin")]
     public async Task<IActionResult> DeleteBook([FromRoute] DeleteBookCommand command)
     {

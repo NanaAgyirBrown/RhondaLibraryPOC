@@ -11,7 +11,7 @@ namespace RhondaLibraryPOC.Presentation.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize]
-public class UserController : ControllerBase    
+public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
     private readonly IMediator _mediatR;
@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost(Name = "RegisterUser")]
-    public async Task<IActionResult> AddUser([FromBody]AddUserCommand command)
+    public async Task<IActionResult> AddUser([FromBody] AddUserCommand command)
     {
         _logger.LogInformation("Adding a new user");
         var result = await _mediatR.Send(command);

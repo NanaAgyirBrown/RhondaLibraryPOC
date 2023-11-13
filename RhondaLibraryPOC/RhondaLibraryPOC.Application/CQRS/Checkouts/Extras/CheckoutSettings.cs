@@ -6,7 +6,7 @@
 
 public static class CheckoutSettings
 {
-    public const string SectionName = "CheckoutSettings";   
+    public const string SectionName = "CheckoutSettings";
 
     public static int MaxBooks { get; set; }
     public static ReadPeriod? ReadPeriod { get; set; }
