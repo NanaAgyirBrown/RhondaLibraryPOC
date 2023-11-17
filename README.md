@@ -1,4 +1,7 @@
-# Project Title
+# RhondaLibraryPOC
+
+[![Build Status](https://travis-ci.org/NanaAgyirBrown/RhondaLibraryPOC.svg?branch=main)](https://travis-ci.org/NanaAgyirBrown/RhondaLibraryPOC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
