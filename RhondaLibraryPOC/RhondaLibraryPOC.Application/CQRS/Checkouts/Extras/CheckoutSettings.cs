@@ -1,16 +1,30 @@
-﻿namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
 
 /// <summary>
 /// PICKS UP THE SETTINGS FROM THE APPSETTINGS.JSON FILE
 /// </summary>
 
-public static class CheckoutSettings
+public class CheckoutSettings
 {
     public const string SectionName = "CheckoutSettings";
 
-    public static int MaxBooks { get; set; }
-    public static ReadPeriod? ReadPeriod { get; set; }
-    public static OverdueFineCharges? OverdueFineCharges { get; set; }
+    public CheckoutSettings()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .Build();
+
+
+        MaxBooks = configuration.GetValue<int>($"{SectionName}:MaxBook");
+        ReadPeriod = configuration.GetSection($"{SectionName}:{ReadPeriod.SectionName}").Get<ReadPeriod>();
+        OverdueFineCharges = configuration.GetSection($"{SectionName}:{OverdueFineCharges.SectionName}").Get<OverdueFineCharges>();
+    }
+
+    public int MaxBooks { get; set; }
+    public ReadPeriod ReadPeriod { get; set; }
+    public OverdueFineCharges OverdueFineCharges { get; set; }
 
 }
 

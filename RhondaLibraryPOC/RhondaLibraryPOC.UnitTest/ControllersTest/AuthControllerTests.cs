@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using RhondaLibraryPOC.Application.Interfaces.AuthService;
 using RhondaLibraryPOC.Presentation.Controllers;
 
 namespace RhondaLibraryPOC.UnitTest.ControllersTest;
@@ -19,8 +20,9 @@ public class AuthControllerTests
         configurationMock.Setup(x => x["Jwt:ExpirationInMinutes"]).Returns("60");
 
         var loggerMock = new Mock<ILogger<AuthController>>();
+        var authService = new Mock<IUserService>();
 
-        var authController = new AuthController(configurationMock.Object, loggerMock.Object);
+        var authController = new AuthController(configurationMock.Object, loggerMock.Object, authService.Object);
 
         var invalidModel = new LoginModel
         {
@@ -47,8 +49,9 @@ public class AuthControllerTests
         configurationMock.Setup(x => x["Jwt:ExpirationInMinutes"]).Returns("60");
 
         var loggerMock = new Mock<ILogger<AuthController>>();
+        var authService = new Mock<IUserService>();
 
-        var authController = new AuthController(configurationMock.Object, loggerMock.Object);
+        var authController = new AuthController(configurationMock.Object, loggerMock.Object, authService.Object);
 
         var invalidModel = new LoginModel
         {
@@ -76,8 +79,9 @@ public class AuthControllerTests
         configurationMock.Setup(x => x["Jwt:ExpirationInMinutes"]).Returns("60");
 
         var loggerMock = new Mock<ILogger<AuthController>>();
+        var authService = new Mock<IUserService>();
 
-        var authController = new AuthController(configurationMock.Object, loggerMock.Object);
+        var authController = new AuthController(configurationMock.Object, loggerMock.Object, authService.Object);
 
         var validModel = new LoginModel
         {

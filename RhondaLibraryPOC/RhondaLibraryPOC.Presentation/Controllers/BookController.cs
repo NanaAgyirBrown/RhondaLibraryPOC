@@ -21,7 +21,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPost(Name = "AddBook")]
-    [Authorize]
+    [Authorize(Roles = "Admin, Librarian")]
     public async Task<IActionResult> AddBook([FromBody] AddBookCommand command)
     {
         _logger.LogInformation("Adding a new book");
@@ -47,7 +47,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateBook")]
-    [Authorize("Admin")]
+    [Authorize(Roles = "Admin, Librarian")]
     public async Task<IActionResult> UpdateBook([FromBody] UpdateBookCommand command)
     {
         _logger.LogInformation("Updating book");
@@ -56,7 +56,7 @@ public class BookController : ControllerBase
     }
 
     [HttpDelete("{Isbn}", Name = "DeleteBook")]
-    [Authorize("Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteBook([FromRoute] DeleteBookCommand command)
     {
         _logger.LogInformation("Deleting book");

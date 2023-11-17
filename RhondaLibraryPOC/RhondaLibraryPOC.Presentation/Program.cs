@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RhondaLibraryPOC.Application;
+using RhondaLibraryPOC.Application.Interfaces.AuthService;
 using RhondaLibraryPOC.Infrastructure;
 using RhondaLibraryPOC.Presentation;
+using System.Security.Claims;
 using System.Text;
 
 Console.Title = "Rhonda Library POC Microservice";
@@ -63,8 +67,29 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _configuration["Jwt:Issuer"],
-                ValidAudience = "https://localhost:5001",
+                ValidAudience = _configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = context =>
+                {
+                    var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                    var username = context.Principal.Identity.Name;
+                    var role = userService.GetRoleByUsername(username);
+
+                    // Add custom claims here if needed
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Role, role),
+                    };
+
+                    var appIdentity = new ClaimsIdentity(claims);
+                    context.Principal.AddIdentity(appIdentity);
+
+                    return Task.CompletedTask;
+                }
             };
         });
 
