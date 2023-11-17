@@ -14,8 +14,8 @@ CREATE TABLE Shelve.books (
     publisher VARCHAR(255) NOT NULL,
     genre VARCHAR(100) NOT NULL,
     availability BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create table for users
@@ -26,8 +26,8 @@ CREATE TABLE Persona.users (
     email VARCHAR(100) NOT NULL,
     address VARCHAR(150) default NULL,
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create table for checkouts
@@ -35,10 +35,9 @@ CREATE TABLE Account.checkouts (
     checkout_id uuid PRIMARY KEY Default uuid_generate_v1(),
     user_id uuid REFERENCES Persona.users(user_id),
     BookCheckout jsonb[] not null,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 --------------------------Procedures-------------------------------------------------------------------
 -- Function to add a new book
 Select * from Shelve.IfBookExists('1425366598');
@@ -483,194 +482,221 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-/*{
-    'Isbn','147586321',
-    'CheckoutDate', current_timestamp,
-    'ExpectedReturnDate', current_timestamb + Interval '10 Days',
-    'Returned', false,
-    'Fine', 0.00
-},
-{
-    'Isbn','82990992883',
-    'CheckoutDate', current_timestamp,
-    'ExpectedReturnDate', current_timestamb + Interval '14 Days',
-    'Returned', false,
-    'Fine', 0.00
-}*/
-
 -- Function to check out one or more books for a user
-Create TABLE Account.checkouts (
-    checkout_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id uuid REFERENCES Persona.users(user_id),
-    bookcheckout Jsonb[] NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE OR REPLACE FUNCTION Account.checkout_books(vUser_id uuid, vBooks jsonb[])
+CREATE OR REPLACE FUNCTION Account.checkout_books(vUser_id TEXT, vBooks TEXT)
 RETURNS TABLE("StatusCode" INTEGER, "Status" TEXT, "Message" TEXT, "Details" TEXT)
 AS
 $$
 DECLARE
     CHK_ID TEXT;
 BEGIN
-    INSERT INTO Account.checkouts (user_id, bookcheckout)
-    VALUES (vUser_id, ARRAY[vBooks])
+    INSERT INTO Account.checkouts (user_id, bookcheckout, created_at, updated_at)
+    VALUES (vUser_id::UUID, ARRAY[CAST(vBooks AS JSONB)], current_timestamp::timestamp without time zone, current_timestamp::timestamp without time zone)
     RETURNING checkout_id::TEXT INTO CHK_ID;
 
-    IF CHK_ID IS NOT NULL AND CHK_ID != '' THEN
-        RETURN QUERY SELECT 200, 'Successful', 'Book(s) checked out successfully.',
-            (
-                SELECT
-                    jsonb_build_object(
-                        'Checkout', c.checkout_id,
-                        'UserID', u.user_id,
-                        'FullName', u.full_name,
-                        'Email', u.email,
-                        'Checkouts', COALESCE(
-                            (
-                                SELECT jsonb_agg(
-                                    jsonb_build_object(
-                                        'Books', (
-                                            SELECT jsonb_agg(
-                                                jsonb_build_object(
-                                                    'ISBN', b.isbn,
-                                                    'Title', b.title,
-                                                    'CheckoutDate', bookdata->>'checkDate',
-                                                    'ReturnDate', bookdata->>'ReturnDate',
-                                                    'Returned', bookdata->>'Returned',
-                                                    'Fee', bookdata->>'Fee'
-                                                )
-                                            )
-                                            FROM unnest(c.bookcheckout) AS bookdata
-                                            JOIN shelve.books b ON bookdata->>'isbn' = b.isbn
-                                        )
-                                    )
-                                )
-                                FROM Account.checkouts c
-                                WHERE c.user_id = u.user_id
-                            ),
-                            '[]'::JSONB
-                        )
-                    )::TEXT
-            )
+    IF CHK_ID IS NOT NULL AND CHK_ID != ''
+    THEN
+        RETURN QUERY
+        SELECT
+            200,
+            'SUCCESS',
+            'Checkout books attached',
+            jsonb_build_object(
+                'User', jsonb_build_object(
+                    'UserID', vUser_id,
+                    'FullName', COALESCE(u.full_name, ''),
+                    'Email', COALESCE(u.email, '')
+                ),
+                'Checkouts', jsonb_build_object(
+                    'CheckoutId', CHK_ID,
+                    'Books', COALESCE(
+                        (SELECT jsonb_agg(jsonb_set(book_info, '{title}', to_jsonb(title)))
+                         FROM (
+                             SELECT jsonb_array_elements(unnest(c.bookcheckout)) AS book_info, 1 AS constant_value
+                             FROM Persona.users u
+                             LEFT JOIN Account.checkouts c ON u.user_id = c.user_id
+                               AND u.user_id::TEXT = vUser_id
+                               AND c.checkout_id::TEXT = CHK_ID
+                             LEFT JOIN unnest(c.bookcheckout) bd ON true
+                             WHERE u.user_id::TEXT = vUser_id
+                         ) AS tb
+                         LEFT JOIN Shelve.books b ON tb.book_info::jsonb ->> 'BookId' = b.isbn
+                         AND tb.book_info::jsonb ->> 'Returned' = false::TEXT
+                        )::JSONB, '[]'::JSONB)
+                )
+            )::TEXT
             FROM persona.users u
-            LEFT JOIN Account.checkouts c ON u.user_id = c.user_id AND c.checkout_id::TEXT = CHK_ID;
+            LEFT JOIN Account.checkouts c ON u.user_id = c.user_id
+            WHERE c.checkout_id::TEXT = CHK_ID AND u.user_id::TEXT = vUser_id;
     ELSE
-        RETURN QUERY SELECT 400, 'Failed', 'Could not check out books.',
-            (
-                SELECT
-                    jsonb_build_object(
-                        'Checkout', '',
-                        'UserID', '',
-                        'FullName', '',
-                        'Email', '',
-                        'Checkouts', COALESCE(
-                            (
-                                SELECT jsonb_agg(
-                                    jsonb_build_object(
-                                        'Books', (
-                                            SELECT jsonb_agg(
-                                                jsonb_build_object(
-                                                    'ISBN', '',
-                                                    'Title', '',
-                                                    'CheckoutDate', '',
-                                                    'ReturnDate', '',
-                                                    'Returned', '',
-                                                    'Fee', ''
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
-                            '[]'::JSONB
-                        )
-                    )::TEXT
-            );
+        RETURN QUERY
+        SELECT
+            400,
+            'FAILED',
+            'Checkout books not found',
+            jsonb_build_object(
+                'User', json_build_object(
+                    'UserID', '',
+                    'FullName', '',
+                    'Email', ''
+                ),
+                'Checkouts', json_build_object(
+                    'CheckoutId', '',
+                    'Books', '[]'::JSONB
+                )
+            )::TEXT;
+    END IF;
+
+EXCEPTION
+    WHEN SQLSTATE 'P0000' THEN
+        RETURN QUERY SELECT 500, 'QueryException', 'Exception occurred while executing query.', 'Exception occurred while executing query.';
+    WHEN OTHERS THEN
+        RETURN QUERY SELECT 500, 'GeneralException', 'General exception occurred while executing query.', 'General exception occurred while executing query.';
+END;
+$$ LANGUAGE plpgsql;
+
+------------------------------------------------------------------------------------------------------------------------
+Select * from Account.Get_Checkout_Books('bebf1d3a-4ae4-4263-90aa-361e8f5f7ddf','21396c12-84bc-11ee-adfe-0242ac110005');
+
+CREATE OR REPLACE FUNCTION Account.Get_Checkout_Books(vUserID TEXT, vCheckoutId TEXT)
+RETURNS TABLE ("StatusCode" INTEGER, "Status" TEXT, "Message" TEXT, "Details" TEXT)
+AS
+$$
+BEGIN
+    IF EXISTS (SELECT 1 FROM Account.checkouts WHERE checkout_id::TEXT = vCheckoutId AND user_id::TEXT = vUserID)
+    THEN
+        RETURN QUERY
+        SELECT
+            200,
+            'SUCCESS',
+            'Checkout books attached',
+            jsonb_build_object(
+                'User', jsonb_build_object(
+                    'UserID', vUserID,
+                    'FullName', COALESCE(u.full_name, ''),
+                    'Email', COALESCE(u.email, '')
+                ),
+                'Checkouts', jsonb_build_object(
+                    'CheckoutId', vCheckoutId,
+                    'Books', COALESCE(
+                        (SELECT jsonb_agg(jsonb_set(book_info, '{title}', to_jsonb(title)))
+                         FROM (
+                             SELECT jsonb_array_elements(unnest(c.bookcheckout)) AS book_info, 1 AS constant_value
+                             FROM Persona.users u
+                             LEFT JOIN Account.checkouts c ON u.user_id = c.user_id
+                               AND u.user_id::TEXT = vUserID
+                               AND c.checkout_id::TEXT = vCheckoutId
+                             LEFT JOIN unnest(c.bookcheckout) bd ON true
+                             WHERE u.user_id::TEXT = vUserID
+                         ) AS tb
+                         LEFT JOIN Shelve.books b ON tb.book_info::jsonb ->> 'BookId' = b.isbn
+                         AND tb.book_info::jsonb ->> 'Returned' = false::TEXT
+                        )::JSONB, '[]'::JSONB)
+                )
+            )::TEXT
+            FROM persona.users u
+            LEFT JOIN Account.checkouts c ON u.user_id = c.user_id
+            WHERE c.checkout_id::TEXT = vCheckoutId AND u.user_id::TEXT = vUserID;
+    ELSE
+        RETURN QUERY
+        SELECT
+            400,
+            'FAILED',
+            'Checkout books not found',
+            jsonb_build_object(
+                'User', json_build_object(
+                    'UserID', '',
+                    'FullName', '',
+                    'Email', ''
+                ),
+                'Checkouts', json_build_object(
+                    'CheckoutId', '',
+                    'Books', '[]'::JSONB
+                )
+            )::TEXT;
     END IF;
 
     EXCEPTION
-        WHEN SQLSTATE 'P0000' THEN
-            RETURN QUERY SELECT 500, 'QueryException', 'Exception occurred while executing query.', 'Exception occurred while executing query.';
-        WHEN SQLSTATE 'P0001' THEN
-            RETURN QUERY SELECT 500, 'FunctionException', 'Exception occurred while executing function.', 'Exception occurred while executing function.';
-        WHEN SQLSTATE '42883' THEN
-            RETURN QUERY SELECT 500, 'UndefinedException', 'Undefined function exception occurred while executing query.', 'Undefined function exception occurred while executing query.';
-        WHEN SQLSTATE '23505' THEN
-            RETURN QUERY SELECT 409, 'ISBNViolation', 'Unique violation exception occurred while saving record.', 'User already exists';
-        WHEN SQLSTATE '23503' THEN
-            RETURN QUERY SELECT 409, 'ReferenceViolation', 'Foreign key violation exception occurred while executing query.', 'Foreign key violation exception occurred while executing query.';
-        WHEN SQLSTATE '25P02' THEN
-            RETURN QUERY SELECT 400, 'FailedSqlTransaction', 'DB Query failed to execute', 'DB query failed to execute';
-        WHEN SQLSTATE '08000' THEN
-            RETURN QUERY SELECT 502, 'BadConnection', 'Connection exception occurred while executing query.', 'Connection exception occurred while executing query.';
-        WHEN OTHERS THEN
-            -- Check if the exception is related to JSON
-            IF SQLSTATE = '22023' OR SQLSTATE = '22021' THEN
-                RETURN QUERY SELECT 500, 'JsonException', 'Json object manipulation exception occurred while executing query.', 'Json object manipulation exception occurred while executing query.';
-            ELSE
-                -- Handle other exceptions
-                RETURN QUERY SELECT 500, 'GeneralException', 'General exception occurred while executing query.', 'General exception occurred while executing query.';
-            END IF;
+    WHEN SQLSTATE 'P0000' THEN
+        RETURN QUERY SELECT 500, 'QueryException', 'Exception occurred while executing query.', 'Exception occurred while executing query.';
+    WHEN OTHERS THEN
+        RETURN QUERY SELECT 500, 'GeneralException', 'General exception occurred while executing query.', 'General exception occurred while executing query.';
 END;
 $$ LANGUAGE plpgsql;
+-----------------------------------------------------------------------------------------------------------------------------------------
+Select * from Account.Get_Checkout_BookDetail('62a16f02-84c0-11ee-a16f-0242ac110005', '9780547928210');
 
+CREATE OR REPLACE FUNCTION Account.Get_Checkout_BookDetail(vCheckoutId TEXT, vBookId TEXT)
+RETURNS TABLE ("StatusCode" INTEGER, "Status" TEXT, "Message" TEXT, "Details" TEXT)
+AS
+$$
+BEGIN
+    IF EXISTS (SELECT 1 FROM Account.checkouts WHERE checkout_id::TEXT = vCheckoutId)
+    THEN
+        RETURN QUERY
+        SELECT
+            200,
+            'SUCCESS',
+            'Checkout books attached',
+            (Select coalesce(
+                (Select jsonb_set(book_info, '{title}', to_jsonb(b.title)) from
+                (
+                    SELECT jsonb_array_elements(unnest(c.bookcheckout)) AS book_info
+                    FROM Account.checkouts c JOIN unnest(c.bookcheckout) bd ON true
+                    WHERE checkout_id = vCheckoutId) as bif
+                    LEFT JOIN Shelve.books b ON bif.book_info::jsonb ->> 'BookId' = b.isbn
+                where bif.book_info ->> 'BookId' = vBookId),'{}')
+            )::TEXT;
+    ELSE
+        RETURN QUERY
+        SELECT
+            400,
+            'FAILED',
+            'Checkout book not found',
+            '{}'::TEXT;
+    END IF;
 
-SELECT * FROM Account.checkout_books('70e2d075-5309-4d14-99af-0adb3897bcd7'::Text,'[
-    {
-      "Isbn": "147586321",
-      "CheckoutDate": "",
-      "ExpectedReturnDate": "",
-      "Returned": false,
-      "Fine": 0.00
-    },
-    {
-      "Isbn":"82990992883",
-      "CheckoutDate": "",
-      "ExpectedReturnDate": "",
-      "Returned": false,
-      "Fine": 0.00
-    }]'::JSONB);
+    EXCEPTION
+    WHEN SQLSTATE 'P0000' THEN
+        RETURN QUERY SELECT 500, 'QueryException', 'Exception occurred while executing query.', 'Exception occurred while executing query.';
+    WHEN OTHERS THEN
+        RETURN QUERY SELECT 500, 'GeneralException', 'General exception occurred while executing query.', 'General exception occurred while executing query.';
+END;
+$$ LANGUAGE plpgsql;
+------------------------------------------------------------------------------------------------------------------------------------------------
+-- Call the function to update the Returned status for a specific BookId
+SELECT update_book_returned_status('62a16f02-84c0-11ee-a16f-0242ac110005', '9780547928227');
 
-select * from Shelve.books;
-
-insert into account.checkouts(user_id, bookcheckout, created_at, updated_at)
-values ('70e2d075-5309-4d14-99af-0adb3897bcd7',
-        '{{"Fine": 0.00, "Isbn": "82990992883", "Returned": false, "CheckoutDate": "2023-11-11T20:57:07.296168+00:00", "ExpectedReturnDate": "2023-11-25T20:57:07.296168+00:00"},' ||
-        '{"Fine": 0.00, "Isbn": "147586321", "Returned": false, "CheckoutDate": "2023-11-11T20:57:07.296168+00:00", "ExpectedReturnDate": "2023-11-21T20:57:07.296168+00:00"}}',
-        current_timestamp, current_timestamp);
-
-Select * from account.checkout_books('70e2d075-5309-4d14-99af-0adb3897bcd7',
-        Array['{"Fine": 0.00, "Isbn": "82990992883", "Returned": false, "CheckoutDate": "2023-11-11T20:57:07.296168+00:00", "ExpectedReturnDate": "2023-11-25T20:57:07.296168+00:00"}'::jsonb,
-        '{"Fine": 0.00, "Isbn": "147586321", "Returned": false, "CheckoutDate": "2023-11-11T20:57:07.296168+00:00", "ExpectedReturnDate": "2023-11-21T20:57:07.296168+00:00"}'::jsonb]);
-
-
-select bookcheckout from Account.checkouts;
-
-
--- Function to return one or more books and calculate fines if any
-CREATE OR REPLACE FUNCTION Account.return_books(user_id INT, book_isbns VARCHAR[])
+CREATE OR REPLACE FUNCTION update_book_returned_status(p_checkout_id Text, p_book_id text)
 RETURNS VOID AS $$
 DECLARE
-    fine_amount DECIMAL(10, 2) DEFAULT 0.0;
+    updated_data jsonb;
 BEGIN
-    -- Add logic to return books and calculate fines if needed
-    -- Update the 'checkouts' table accordingly
+    -- Update the element in the jsonb[] array
+    UPDATE Account.checkouts
+    SET bookcheckout = (
+        SELECT array_agg(
+            CASE
+                WHEN element ->> 'BookId' = p_book_id THEN jsonb_set(element, '{Returned}', 'true'::jsonb)
+                ELSE element
+            END
+        )
+        FROM unnest(bookcheckout) AS element
+    )
+    WHERE checkout_id = p_checkout_id;
+
+    -- Optional: Fetch the updated array for further processing or logging
+    SELECT bookcheckout INTO updated_data
+    FROM Account.checkouts
+    WHERE checkout_id::TEXT = p_checkout_id;
+
+    -- Optional: Print the updated array for verification
+    RAISE NOTICE 'Updated BookCheckout: %', updated_data;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE PLPGSQL;
+-------------------------------------------------------------------------------------------------------------------
+Select * from Persona.Users;
+Select * from Shelve.books;
+select * from Account.checkouts;
+-------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-insert into Persona.users(username, full_name) values ('Nana', 'Nana Brown');
-
-insert into Account.checkouts(user_id, isbn, checkout_date, return_date, returned, fine_amount, created_at, updated_at)
-VALUES ('127dc486-7b90-420b-b0b6-8a1a5d925676', '123524226465', current_timestamp - interval '50 days', current_timestamp - interval '40 days', true, 0, current_timestamp - interval '50 days', current_timestamp - interval '40 days');
-
-insert into Account.checkouts(user_id, isbn, checkout_date, return_date, returned, fine_amount, created_at, updated_at)
-VALUES ('127dc486-7b90-420b-b0b6-8a1a5d925676', '123524226465', current_timestamp - interval '30 days', current_timestamp - interval '20 days', true, 0, current_timestamp - interval '30 days', current_timestamp - interval '20 days');
-
-insert into Account.checkouts(user_id, isbn, checkout_date, return_date, returned, fine_amount, created_at, updated_at)
-VALUES ('127dc486-7b90-420b-b0b6-8a1a5d925676', '123524226465', current_timestamp - interval '80 days', current_timestamp - interval '40 days', true, 25.89, current_timestamp - interval '80 days', current_timestamp - interval '40 days');
