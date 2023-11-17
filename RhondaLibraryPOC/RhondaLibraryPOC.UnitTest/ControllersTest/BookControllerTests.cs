@@ -1,15 +1,24 @@
-﻿using ErrorOr;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using ErrorOr;
 using FakeItEasy;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Moq;
+using RhondaLibraryPOC.Application.Checkouts.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books;
 using RhondaLibraryPOC.Application.CQRS.Books.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books.Queries;
+using RhondaLibraryPOC.Application.CQRS.Users.Queries;
+using RhondaLibraryPOC.Presentation.Common;
 using RhondaLibraryPOC.Presentation.Controllers;
 using RhondaLibraryPOC.UnitTest.DataMock;
-using System.Net;
+using Shouldly;
+using Xunit;
 
 namespace RhondaLibraryPOC.UnitTest.ControllersTest
 {
@@ -45,7 +54,7 @@ namespace RhondaLibraryPOC.UnitTest.ControllersTest
         }
 
         [Fact]
-        public async Task GetAllBooks_ReturnsNotFound()
+        public async Task GetAllBooks_ReturnsFound()
         {
             // Arrange
             ErrorOr<IEnumerable<BookDTO>> expectedBookList = MockData.GetBookList();
@@ -56,9 +65,11 @@ namespace RhondaLibraryPOC.UnitTest.ControllersTest
             var result = await _controller.GetAllBooks();
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-            var notFoundResult = (NotFoundObjectResult)result;
-            notFoundResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+            result.Should().BeOfType<OkObjectResult>();
+            var FoundResult = (OkObjectResult)result;
+            FoundResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedBookList.Value);
+
         }
 
         [Fact]
