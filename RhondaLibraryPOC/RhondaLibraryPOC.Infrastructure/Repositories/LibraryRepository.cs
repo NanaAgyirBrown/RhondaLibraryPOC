@@ -14,6 +14,8 @@ using RhondaLibraryPOC.Application.Interfaces.Persistence;
 using RhondaLibraryPOC.Application.Users;
 using RhondaLibraryPOC.Domain.Entity;
 using RhondaLibraryPOC.Infrastructure.Common;
+using System.Data;
+using System.Net;
 using System.Text.Json;
 
 namespace RhondaLibraryPOC.Persistence.Repositories;
@@ -407,22 +409,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         }
     }
 
-    public Task<ErrorOr<UserDTO>> UpdateUser(User command, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<CheckoutDTO> BooksNotReturned(GetBooksNotReturnedQuery query, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<CheckoutDTO> ReturnBooks(ReturnBooksCommand command, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<ErrorOr<CheckoutRecord>> CheckoutBooks(CheckoutBooksCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Application.CQRS.Checkouts.UserCheckout>> BooksNotReturned(GetBooksNotReturnedQuery query, CancellationToken cancellationToken)
     {
         try
         {
@@ -431,7 +418,11 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
             using (var connection = await _dataSource.CreateConnection())
             {
                 _logger.LogInformation("Preparing checkout parameters at {DateTime}", DateTime.Now);
-                var paramlist = ParamPrep.PrepCheckoutParams(command._checkoutDetails);
+
+                (string User, string BookId, string CheckoutId, IEnumerable<CheckoutBook> BookList, DateTime CheckoutDate, DateTime ReturnedDate, bool Returned, decimal Fine) value
+                    = (query.UserId, string.Empty, query.CheckoutId, Enumerable.Empty<CheckoutBook>(), DateTime.Now, DateTime.Now, false, 0.00m);
+
+                var paramlist = ParamPrep.PrepCheckoutParams(value);
 
                 _logger.LogInformation("Checking if User Exists");
                 var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Persona.IfUserExists(@vUser)", paramlist);
@@ -440,13 +431,13 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
 
                 if (status.FirstError.Code == "User.UserExists")
                 {
-                    _logger.LogInformation("Book does not exist, adding book to the database. Creating a new record.");
-                    dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.checkout_books(@User, @vBookList)", paramlist);
+                    _logger.LogInformation("Retrieving user checkout books.");
+                    dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.Get_Checkout_Books(@vUser, @vCheckoutId)", paramlist);
 
                     if (dbResponse.StatusCode == (int)EnumStatus.Success)
                     {
-                        _logger.LogInformation("Book added successfully. Returning book details.");
-                        return JsonSerializer.Deserialize<CheckoutRecord>(dbResponse.Details, options: null);
+                        _logger.LogInformation("Checkout book details.");
+                        return JsonSerializer.Deserialize<Application.CQRS.Checkouts.UserCheckout>(dbResponse.Details, options: null);
                     }
                     else
                     {
@@ -472,6 +463,109 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         {
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
+
+    }
+
+    public async Task<ErrorOr<Application.CQRS.Checkouts.UserCheckout>> ReturnBooks((string UserId, string CheckoutId, IEnumerable<BookDetail> booksFine) command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _logger.LogInformation("Checking out Books at {DateTime}", DateTime.Now);
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Preparing checkout parameters at {DateTime}", DateTime.Now);
+
+                (string User, string BookId, string CheckoutId, IEnumerable<CheckoutBook> BookList, DateTime CheckoutDate, DateTime ReturnedDate, bool Returned, decimal Fine) value
+                    = (command.UserId, string.Empty, command.CheckoutId, null, DateTime.Now, DateTime.Now, false, 0.00m);
+
+                var paramlist = ParamPrep.PrepCheckoutParams(value);
+                paramlist.Add("vBooksFine", JsonSerializer.Serialize(command.booksFine), DbType.String, ParameterDirection.Input);
+
+
+                _logger.LogInformation("Returning checkout books.");
+                var dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.checkout_books(@vUser, @vBookList)", paramlist);
+
+                if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Book added successfully. Returning book details.");
+                    return JsonSerializer.Deserialize<Application.CQRS.Checkouts.UserCheckout>(dbResponse.Details, options: null);
+                }
+                else
+                {
+                    return Error.Failure(
+                            code: dbResponse.Status,
+                            description: dbResponse.Details);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - Checkout exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+
+    public async Task<ErrorOr<Application.CQRS.Checkouts.UserCheckout>> CheckoutBooks(CheckoutBookCommand command, CancellationToken cancellationToken)
+    {
+        try
+         {
+             _logger.LogInformation("Checking out Books at {DateTime}", DateTime.Now);
+
+            using (var connection = await _dataSource.CreateConnection())
+             {
+                 _logger.LogInformation("Preparing checkout parameters at {DateTime}", DateTime.Now);
+
+                (string User, string BookId, string CheckoutId, IEnumerable<CheckoutBook> BookList, DateTime CheckoutDate, DateTime ReturnedDate, bool Returned, decimal Fine) value
+                    = (command.CheckoutBookList.Userid, string.Empty, string.Empty, command.CheckoutBookList.BookList, command.CheckoutBookList.CheckoutDate, DateTime.Now, false, 0.00m);
+
+                var paramlist = ParamPrep.PrepCheckoutParams(value);
+
+                 _logger.LogInformation("Checking if User Exists");
+                 var dbResponse = await connection.QueryFirstAsync<DbResponse>("Select * from Persona.IfUserExists(@vUser)", paramlist);
+
+                 var status = ErrorStatus.UserSearchChecker(dbResponse.StatusCode);
+
+                 if (status.FirstError.Code == "User.UserExists")
+                 {
+                     _logger.LogInformation("Retrieving checkout books.");
+                     dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.checkout_books(@vUser, @vBookList)", paramlist);
+
+                     if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                     {
+                         _logger.LogInformation("Book added successfully. Returning book details.");
+                         return JsonSerializer.Deserialize<Application.CQRS.Checkouts.UserCheckout>(dbResponse.Details, options: null);
+                     }
+                     else
+                     {
+                         return Error.Failure(
+                                 code: dbResponse.Status,
+                                 description: dbResponse.Details);
+                     }
+                 }
+                 else
+                     return Error.Validation(
+                             code: dbResponse.Status,
+                             description: dbResponse.Details);
+             }
+         }
+         catch (Exception ex)
+         {
+             _logger.LogInformation("LibraryRepository - Checkout exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+             return Error.Failure(
+                     code: "Operation Exception",
+                     description: ex.Message);
+         }
+         finally
+         {
+             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+         }
     }
 
     public async Task<ErrorOr<(string title, string Genre)>> GetTitleGenre(string Isbn)
@@ -548,7 +642,7 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
 
                 var status = ErrorStatus.CheckBookExists(dbResponse.StatusCode);
 
-                if (status.FirstError.Code == "Book.BookFound")
+                if (status.FirstError.Code == "Book.BookExists")
                     return true;
                 else
                 {
@@ -571,5 +665,100 @@ public class LibraryRepository : IBookRepository, ICheckoutRepository, IUserRepo
         {
             _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
         }
+    }
+
+    public async Task<ErrorOr<BookDetail>> GetCheckedOutbook(string User, string CheckoutId)
+    {
+        try
+        {
+            _logger.LogInformation("Retrieving Checked out book details at {DateTime}", DateTime.Now);
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Preparing book parameters at {DateTime}", DateTime.Now);
+
+                (string User, string BookId, string CheckoutId, IEnumerable<CheckoutBook> BookList, DateTime CheckoutDate, DateTime ReturnedDate, bool Returned, decimal Fine) value 
+                    = (User, string.Empty, CheckoutId, null, DateTime.Now, DateTime.Now, false, 0.00m);
+                
+                var paramlist = ParamPrep.PrepCheckoutParams(value);
+
+                _logger.LogInformation("Checking if Book Exist with ISBN ");
+                var dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.get_checkout_book(@vUser, @vBookId)", paramlist);
+
+                if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Book added successfully. Returning book details.");
+                    return JsonSerializer.Deserialize<BookDetail>(dbResponse.Details, options: null);
+                }
+                else
+                {
+                    return Error.Failure(
+                            code: dbResponse.Status,
+                            description: dbResponse.Details);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - book exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+
+    public async Task<ErrorOr<BookDetail>> GetCheckedbookDetails(string CheckoutId, string BookId)
+    {
+        try
+        {
+            _logger.LogInformation("Retrieving Checked out book details at {DateTime}", DateTime.Now);
+
+            using (var connection = await _dataSource.CreateConnection())
+            {
+                _logger.LogInformation("Preparing book parameters at {DateTime}", DateTime.Now);
+
+                (string User, string BookId, string CheckoutId, IEnumerable<CheckoutBook> BookList, DateTime CheckoutDate, DateTime ReturnedDate, bool Returned, decimal Fine) value
+                    = (string.Empty, BookId, CheckoutId, null, DateTime.Now, DateTime.Now, false, 0.00m);
+
+                var paramlist = ParamPrep.PrepCheckoutParams(value);
+
+                _logger.LogInformation("Checking if Book Exist with ISBN ");
+                var dbResponse = await connection.QuerySingleAsync<DbResponse>("Select * from Account.Get_Checkout_BookDetail(@vCheckoutId, @vBookId)", paramlist);
+
+                if (dbResponse.StatusCode == (int)EnumStatus.Success)
+                {
+                    _logger.LogInformation("Books details retrieved successfully. Returning book details.");
+                    return JsonSerializer.Deserialize<BookDetail>(dbResponse.Details, options: null);
+                }
+                else
+                {
+                    return Error.Failure(
+                            code: dbResponse.Status,
+                            description: dbResponse.Details);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogInformation("LibraryRepository - book exception occurred: {ExceptionMessage} at {DateTimeCalled}", ex.Message, DateTime.Now);
+
+            return Error.Failure(
+                    code: "Operation Exception",
+                    description: ex.Message);
+        }
+        finally
+        {
+            _logger.LogInformation("Closing connection at {DateTime}", DateTime.Now);
+        }
+    }
+
+    public Task<ErrorOr<UserDTO>> UpdateUser(User user, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

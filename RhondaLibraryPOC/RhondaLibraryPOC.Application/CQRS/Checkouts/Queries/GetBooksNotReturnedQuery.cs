@@ -5,28 +5,29 @@ using RhondaLibraryPOC.Application.Interfaces;
 
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Queries;
 
-public class GetBooksNotReturnedQuery : IRequest<ErrorOr<CheckoutDTO>>
+public class GetBooksNotReturnedQuery : IRequest<ErrorOr<UserCheckout>>
 {
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
+    public string? CheckoutId { get; set; }
 
-    public GetBooksNotReturnedQuery(Guid userId)
+    public GetBooksNotReturnedQuery(string UserId, string? CheckoutId)
     {
-        UserId = userId;
+        this.UserId = UserId;
+        this.CheckoutId = CheckoutId;
     }
 }
 
-public class GetBooksNotReturnedQueryHandler : IRequestHandler<GetBooksNotReturnedQuery, ErrorOr<CheckoutDTO>>
+public class GetBooksNotReturnedHandler : IRequestHandler<GetBooksNotReturnedQuery, ErrorOr<UserCheckout>>
 {
     private readonly ICheckoutRepository _checkoutRepository;
 
-    public GetBooksNotReturnedQueryHandler(ICheckoutRepository checkoutRepository)
+    public GetBooksNotReturnedHandler(ICheckoutRepository checkoutRepository)
     {
         _checkoutRepository = checkoutRepository;
     }
 
-    public async Task<ErrorOr<CheckoutDTO>> Handle(GetBooksNotReturnedQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<UserCheckout>> Handle(GetBooksNotReturnedQuery request, CancellationToken cancellationToken)
     {
-        var checkout = await _checkoutRepository.BooksNotReturned(request, cancellationToken);
-        return checkout;
+        return await _checkoutRepository.BooksNotReturned(request, cancellationToken);
     }
 }

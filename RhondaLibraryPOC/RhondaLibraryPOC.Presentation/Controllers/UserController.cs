@@ -23,6 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost(Name = "RegisterUser")]
+    [Authorize(Roles = "Librarian")]
     public async Task<IActionResult> AddUser([FromBody] AddUserCommand command)
     {
         _logger.LogInformation("Adding a new user");
@@ -32,6 +33,15 @@ public class UserController : ControllerBase
 
     [HttpGet("{Id}", Name = "GetUserById")]
     public async Task<IActionResult> GetUserById([FromRoute] GetUserDetailsQuery query)
+    {
+        _logger.LogInformation("Getting user by id");
+        var result = await _mediatR.Send(query);
+        return ActionHandler.HandleActionResult(result, HttpStatusCode.NotFound);
+    }
+
+    [HttpDelete("{Id}", Name = "DeleteUserById")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteUserById([FromRoute] GetUserDetailsQuery query)
     {
         _logger.LogInformation("Getting user by id");
         var result = await _mediatR.Send(query);
