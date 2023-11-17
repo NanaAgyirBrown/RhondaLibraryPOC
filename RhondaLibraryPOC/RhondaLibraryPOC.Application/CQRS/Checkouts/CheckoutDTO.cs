@@ -60,7 +60,7 @@ public record UserDetail
     public string Email { get; init; }
 
     [JsonPropertyName("UserID")]
-    public Guid UserID { get; init; }
+    public string UserID { get; init; }
 
     [JsonPropertyName("FullName")]
     public string FullName { get; init; }
@@ -93,5 +93,5 @@ public record CheckoutDetail
     public List<BookDetail> Books { get; init; }
 
     [JsonPropertyName("CheckoutId")]
-    public Guid CheckoutId { get; init; }
+    public string CheckoutId { get; init; }
 }
