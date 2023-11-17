@@ -3,7 +3,6 @@ using RhondaLibraryPOC.Application.CQRS.Checkouts;
 using RhondaLibraryPOC.Domain.Entity;
 using System.Data;
 using System.Text.Json;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace RhondaLibraryPOC.Infrastructure.Common;
 

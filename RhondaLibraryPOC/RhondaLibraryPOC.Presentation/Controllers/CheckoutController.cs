@@ -23,7 +23,7 @@ public class CheckoutController : ControllerBase
     }
 
     [HttpPost(Name = "CheckoutBook")]
-    public async Task<IActionResult> Checkout([FromBody]CheckoutBookCommand checkoutBook)
+    public async Task<IActionResult> Checkout([FromBody] CheckoutBookCommand checkoutBook)
     {
         _logger.LogInformation("Checking out a book");
         var result = await _mediatR.Send(checkoutBook);
@@ -31,7 +31,7 @@ public class CheckoutController : ControllerBase
     }
 
     [HttpPost("GetCheckoutRecord")]
-    public async Task<IActionResult> GetCheckoutRecord([FromBody]GetBooksNotReturnedQuery query)
+    public async Task<IActionResult> GetCheckoutRecord([FromBody] GetBooksNotReturnedQuery query)
     {
         _logger.LogInformation("Getting checkout record");
         var result = await _mediatR.Send(query);
@@ -39,7 +39,7 @@ public class CheckoutController : ControllerBase
     }
 
     [HttpPost("ReturnBook")]
-    public async Task<IActionResult> ReturnBook([FromBody]ReturnBookCommand returnBook)
+    public async Task<IActionResult> ReturnBook([FromBody] ReturnBookCommand returnBook)
     {
         _logger.LogInformation("Returning a book");
         var result = await _mediatR.Send(returnBook);

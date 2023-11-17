@@ -6,7 +6,7 @@ namespace RhondaLibraryPOC.UnitTest.DataMock;
 
 public class MockData
 {
-    private static List<CheckoutDTO> CheckoutDTOs = new List<CheckoutDTO>()
+    private static List<CheckoutDTO> CheckoutDTOs = new()
     {
         new CheckoutDTO()
         {
@@ -91,7 +91,7 @@ public class MockData
         }
     };
 
-    private static List<CheckoutBook> CheckoutBooks = new List<CheckoutBook>()
+    private static List<CheckoutBook> CheckoutBooks = new()
     {
         new CheckoutBook()
         {
@@ -119,7 +119,7 @@ public class MockData
         }
     };
 
-    private static List<BookDTO> BookList = new List<BookDTO>()
+    private static List<BookDTO> BookList = new()
     {
         new BookDTO()
         {
@@ -159,7 +159,7 @@ public class MockData
         }
     };
 
-    private static Book sampleBook = new Book()
+    private static Book sampleBook = new()
     {
         Title = "The Hobbit",
         Author = "J.R.R. Tolkien",
@@ -191,7 +191,7 @@ public class MockData
 
     public static BookDTO GetRandomBook()
     {
-        Random random = new Random();
+        Random random = new();
         int index = random.Next(BookList.Count);
 
         return BookList[index];
@@ -199,7 +199,7 @@ public class MockData
 
     public static CheckoutDTO GetRandomCheckoutDTO()
     {
-        Random random = new Random();
+        Random random = new();
         int index = random.Next(CheckoutDTOs.Count);
 
         return CheckoutDTOs[index];
@@ -222,7 +222,7 @@ public class MockData
 
     internal static string GetRandomUser()
     {
-        Random random = new Random();
+        Random random = new();
         int index = random.Next(CheckoutDTOs.Count);
 
         return CheckoutDTOs[index].User.Id;
