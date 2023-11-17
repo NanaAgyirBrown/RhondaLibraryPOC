@@ -1,7 +1,6 @@
 ﻿
 using ErrorOr;
 using MediatR;
-using RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
 using RhondaLibraryPOC.Application.Interfaces;
 
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Commands;
@@ -48,7 +47,7 @@ public class ReturnBookHandler : IRequestHandler<ReturnBookCommand, ErrorOr<User
                 );
             }
 
-            BookDetail bookDetail = new BookDetail
+            BookDetail bookDetail = new()
             {
                 Returned = true,
                 CheckoutDate = returnedDetail.Value.CheckoutDate,

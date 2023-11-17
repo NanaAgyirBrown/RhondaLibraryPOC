@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RhondaLibraryPOC.Application.Interfaces.AuthService
+﻿namespace RhondaLibraryPOC.Application.Interfaces.AuthService
 {
     public interface IUserService
     {

@@ -1,6 +1,5 @@
 ﻿
 using ErrorOr;
-using Microsoft.Extensions.Configuration;
 using RhondaLibraryPOC.Application.Interfaces;
 
 namespace RhondaLibraryPOC.Application.CQRS.Checkouts.Extras;
@@ -55,7 +54,7 @@ public class Extras
                     code: $"BookDoesNotExist",
                     description: $"Book with ISBN {book} does not exist"
                                                                  );
-        }   
+        }
 
         return result;
     }
