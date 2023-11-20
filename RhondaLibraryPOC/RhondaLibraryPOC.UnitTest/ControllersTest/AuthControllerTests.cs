@@ -3,11 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RhondaLibraryPOC.Application.Interfaces.AuthService;
-using RhondaLibraryPOC.Domain.Entity;
 using RhondaLibraryPOC.Presentation.Controllers;
 using Shouldly;
-using System.Data;
-using System.Net;
 
 namespace RhondaLibraryPOC.UnitTest.ControllersTest;
 
@@ -53,9 +50,10 @@ public class AuthControllerTests
 
         var authController = new AuthController(configurationMock.Object, loggerMock.Object, userServiceMock.Object);
 
-        var model = new LoginModel { 
-            Username = "invalidUser", 
-            Password = "invalidPassword" 
+        var model = new LoginModel
+        {
+            Username = "invalidUser",
+            Password = "invalidPassword"
         };
 
         configurationMock.Setup(config => config["UserSignIn:invalidUser:Username"]).Returns("invalidUser");
@@ -82,9 +80,9 @@ public class AuthControllerTests
 
         var authController = new AuthController(configurationMock.Object, loggerMock.Object, userServiceMock.Object);
 
-        var model = new LoginModel 
-        { 
-            Username = "validUser", 
+        var model = new LoginModel
+        {
+            Username = "validUser",
             Password = "validPassword"
         };
 
