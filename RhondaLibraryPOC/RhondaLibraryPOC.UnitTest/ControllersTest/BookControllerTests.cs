@@ -1,24 +1,15 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using ErrorOr;
+﻿using ErrorOr;
 using FakeItEasy;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using RhondaLibraryPOC.Application.Checkouts.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books;
 using RhondaLibraryPOC.Application.CQRS.Books.Commands;
 using RhondaLibraryPOC.Application.CQRS.Books.Queries;
-using RhondaLibraryPOC.Application.CQRS.Users.Queries;
-using RhondaLibraryPOC.Presentation.Common;
 using RhondaLibraryPOC.Presentation.Controllers;
 using RhondaLibraryPOC.UnitTest.DataMock;
-using Shouldly;
-using Xunit;
+using System.Net;
 
 namespace RhondaLibraryPOC.UnitTest.ControllersTest
 {

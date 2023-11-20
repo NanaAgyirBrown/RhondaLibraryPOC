@@ -1,13 +1,10 @@
 ﻿using ErrorOr;
-using FluentAssertions;
-using FluentAssertions.Equivalency;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RhondaLibraryPOC.Application.CQRS.Checkouts;
 using RhondaLibraryPOC.Application.CQRS.Checkouts.Commands;
-using RhondaLibraryPOC.Infrastructure.Common;
 using RhondaLibraryPOC.Presentation.Controllers;
 using Shouldly;
 
@@ -42,12 +39,12 @@ namespace RhondaLibraryPOC.Tests.Controllers
 
             ErrorOr<UserCheckout> expectedResult = new UserCheckout
             {
-                 User = new UserDetail
-                 {
-                     Email = "tester@testing.com",
-                     UserID = "123456",
-                     FullName = "Test"
-                 },
+                User = new UserDetail
+                {
+                    Email = "tester@testing.com",
+                    UserID = "123456",
+                    FullName = "Test"
+                },
                 Checkouts = new CheckoutDetail
                 {
                     CheckoutId = "987456321",
@@ -76,7 +73,7 @@ namespace RhondaLibraryPOC.Tests.Controllers
             // Assert
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(200);
-            
+
             var actualResult = result.Value as UserCheckout;
             actualResult.ShouldNotBeNull();
             actualResult.Checkouts.ShouldBe(expectedResult.Value.Checkouts);
